@@ -30,7 +30,7 @@ class AuthController extends Controller
                 'activation_token' => str_random(60)
             ]);
             $user->save();
-            //$user->notify(new SignupActivate($user));
+            $user->notify(new SignupActivate($user));
             return response()->json([
                 'status'    =>  true,
                 'message'   => 'Thanks! your account has been successfully created. Please check your inbox, a confirmation message is sent on your email.',
