@@ -24,7 +24,10 @@ class ApiValidations {
             'first_name' => 'required|string',
             'last_name' => 'required|string',
             'email' => 'required|string|email|unique:users',
-            'password' => 'required|string|min:6'
+            'password' => 'required|string|min:6',
+            'type' => 'required|string',
+            'phone' => 'required|string',
+            'address' => 'required|string',
         ]);
 
 

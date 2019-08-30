@@ -21,16 +21,21 @@ class AuthController extends Controller
     public function signup(Request $request)
     {
         $validation = $this->validator->signup($request->all());
+
         if($validation['status']){
+
             $user = new User([
-                'first_name' => $request->first_name,
-                'last_name' => $request->last_name,
-                'email' => $request->email,
-                'password' => bcrypt($request->password),
+                'first_name' => $request->input('first_name'),
+                'last_name' => $request->input('last_name'),
+                'email' => $request->input('email'),
+                'password' => bcrypt($request->input('password')),
+                'type' => ($request->input('type') == 'owner') ? 'owner' : 'member',
+                'phone' => $request->input('phone'),
+                'address' => $request->input('address'),
                 'activation_token' => str_random(60)
             ]);
             $user->save();
-            $user->notify(new SignupActivate($user));
+            //$user->notify(new SignupActivate($user));
             return response()->json([
                 'status'    =>  true,
                 'message'   => 'Thanks! your account has been successfully created. Please check your inbox, a confirmation message is sent on your email.',
