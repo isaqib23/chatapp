@@ -41,15 +41,15 @@
     <div class="side-menu">
         <div class='side-menu-body'>
             <ul>
-                <li class="open">
-                    <a href="index.html"><i class="icon ti-home"></i> <span>Dashboards</span> </a>
+                <li @if(Request::segment(1) == '') class="open" @endif>
+                    <a href="{{ route('home') }}"><i class="icon ti-home"></i> <span>Dashboards</span> </a>
                 </li>
-                <li><a href="groups.html"><i class="icon ti-paint-bucket"></i> <span>Groups</span> <span
+                <li @if(Request::segment(1) == 'groups') class="open" @endif><a href="{{ route('groups') }}"><i class="icon ti-paint-bucket"></i> <span>Groups</span> <span
                             class="badge bg-danger-gradient"></span> </a></li>
-                <li><a href="#"><i class="icon ti-rocket"></i> <span>Users</span> </a>
+                <li @if(Request::segment(1) == 'group_owners' || Request::segment(1) == 'members')) class="open" @endif><a href="#"><i class="icon ti-rocket"></i> <span>Users</span> </a>
                     <ul>
-                        <li><a href="owners.html">Group Owners </a></li>
-                        <li><a href="users.html">Users </a></li>
+                        <li @if(Request::segment(1) == 'group_owners') class="open" @endif><a href="{{ route('group_owners') }}">Group Owners </a></li>
+                        <li @if(Request::segment(1) == 'members') class="open" @endif><a href="{{ route('members') }}">Users </a></li>
                     </ul>
                 </li>
                 <li><a href="#"><i class="icon ti-layers-alt"></i> <span>Payment</span> </a>

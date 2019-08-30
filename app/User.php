@@ -55,4 +55,8 @@ class User extends Authenticatable
     public function isMember()    {
         return $this->type === self::DEFAULT_TYPE;
     }
+
+    public function group(){
+        return $this->hasOne('App\GroupUser');
+    }
 }

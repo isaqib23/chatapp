@@ -68,4 +68,65 @@ class ApiValidations {
             return ['status' => true];
         }
     }
+
+    public function group($data){
+        $validator = Validator::make($data,[
+            'name' => 'required|string',
+            'price' => 'required|string',
+            'photo' => 'required|string',
+            'user_id' => 'required|string',
+            'description' => 'required|string',
+        ]);
+
+
+        if ($validator->fails()) {
+            $errors = $validator->messages()->first();
+            return ['status' => false, 'message' => $errors];
+        }else{
+            return ['status' => true];
+        }
+    }
+
+    public function join_group($data){
+        $validator = Validator::make($data,[
+            'group_id' => 'required|string',
+            'user_id' => 'required|string'
+        ]);
+
+
+        if ($validator->fails()) {
+            $errors = $validator->messages()->first();
+            return ['status' => false, 'message' => $errors];
+        }else{
+            return ['status' => true];
+        }
+    }
+
+    public function get_owner_groups($data){
+        $validator = Validator::make($data,[
+            'user_id' => 'required|string'
+        ]);
+
+
+        if ($validator->fails()) {
+            $errors = $validator->messages()->first();
+            return ['status' => false, 'message' => $errors];
+        }else{
+            return ['status' => true];
+        }
+    }
+
+    public function get_group_users($data){
+        $validator = Validator::make($data,[
+            'group_id' => 'required|string'
+        ]);
+
+
+        if ($validator->fails()) {
+            $errors = $validator->messages()->first();
+            return ['status' => false, 'message' => $errors];
+        }else{
+            return ['status' => true];
+        }
+    }
 }

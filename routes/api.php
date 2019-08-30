@@ -28,6 +28,12 @@ Route::group([
     ], function() {
         Route::post('logout', 'AuthController@logout');
         Route::post('user', 'AuthController@user');
+
+        // Group Routes
+        Route::post('create_group', 'GroupController@create');
+        Route::post('join_group', 'GroupController@join');
+        Route::post('owner_groups', 'GroupController@get_owner_groups');
+        Route::post('groups_members', 'GroupController@get_group_users');
     });
 });
 
