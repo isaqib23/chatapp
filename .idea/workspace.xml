@@ -122,7 +122,7 @@
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/resources/views/users" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../metis1" />
     <property name="nodejs_package_manager_path" value="npm" />
   </component>
   <component name="RecentsManager">
@@ -160,7 +160,7 @@
       <updated>1566911568661</updated>
       <workItem from="1566911570393" duration="4613000" />
       <workItem from="1567087508723" duration="19514000" />
-      <workItem from="1567242969790" duration="2278000" />
+      <workItem from="1567242969790" duration="3722000" />
     </task>
     <servers />
   </component>
