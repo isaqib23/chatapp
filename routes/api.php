@@ -28,12 +28,14 @@ Route::group([
     ], function() {
         Route::post('logout', 'AuthController@logout');
         Route::post('user', 'AuthController@user');
+        Route::post('update_profile', 'AuthController@update');
 
         // Group Routes
         Route::post('create_group', 'GroupController@create');
         Route::post('join_group', 'GroupController@join');
         Route::post('owner_groups', 'GroupController@get_owner_groups');
         Route::post('groups_members', 'GroupController@get_group_users');
+        Route::post('group_detail', 'GroupController@group_detail');
     });
 });
 

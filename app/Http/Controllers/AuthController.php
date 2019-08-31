@@ -23,6 +23,12 @@ class AuthController extends Controller
         $validation = $this->validator->signup($request->all());
 
         if($validation['status']){
+            // Upload Group Image
+            define('UPLOAD_DIR', public_path().'/images/');
+            $image = base64_decode($request->input('photo'));
+            $file = UPLOAD_DIR . md5(date('Y-m-d H:i:s')).'.jpg';
+            file_put_contents($file, $image);
+            $data['picture'] = str_replace(public_path().'/images/', '', $file);
 
             $user = new User([
                 'first_name' => $request->input('first_name'),
@@ -32,6 +38,7 @@ class AuthController extends Controller
                 'type' => ($request->input('type') == 'owner') ? 'owner' : 'member',
                 'phone' => $request->input('phone'),
                 'address' => $request->input('address'),
+                'photo' => $data['picture'],
                 'activation_token' => str_random(60)
             ]);
             $user->save();
@@ -105,5 +112,38 @@ class AuthController extends Controller
         $user->activation_token = '';
         $user->save();
         return $user;
+    }
+
+    public function update(Request $request)
+    {
+        $user = new User();
+        $validation = $this->validator->update_user($request->all());
+
+        if($validation['status']){
+            $user = $user->find($request->input('user_id'));
+            if($request->has('photo')) {
+                // Upload Group Image
+                define('UPLOAD_DIR', public_path() . '/images/');
+                $image = base64_decode($request->input('photo'));
+                $file = UPLOAD_DIR . md5(date('Y-m-d H:i:s')) . '.jpg';
+                file_put_contents($file, $image);
+                $user->photo = str_replace(public_path() . '/images/', '', $file);
+            }
+
+                $user->first_name = $request->input('first_name');
+                $user->last_name = $request->input('last_name');
+                $user->phone = $request->input('phone');
+                $user->address = $request->input('address');
+
+            $user->save();
+
+            return response()->json([
+                'status'    =>  true,
+                'message'   => 'Your Profile Update Successfully!',
+                'reponse'   => $user
+            ], 200);
+        }else{
+            return response()->json($validation);
+        }
     }
 }

@@ -45,6 +45,8 @@ class GroupController extends Controller
                 'price' => $request->input('price'),
                 'photo' => $data['picture'],
                 'user_id' => $request->input('user_id'),
+                'category_id' => $request->input('category_id'),
+                'type' => $request->input('type'),
                 'description' => $request->input('description'),
             ]);
             $group->save();
@@ -126,6 +128,24 @@ class GroupController extends Controller
 
         if($validation['status']){
             $results = $user_group->with(['user','group'])->where(['group_id' => $request->input('group_id')])->get();
+
+            return response()->json([
+                'status'    =>  true,
+                'message'   => 'Group Users List Fetched.',
+                'response'  => $results
+            ], 200);
+        }else{
+            return response()->json($validation);
+        }
+    }
+
+    public function group_detail(Request $request){
+        $group = new Group();
+        $user_group = new GroupUser();
+        $validation = $this->validator->get_group_users($request->all());
+
+        if($validation['status']){
+            $results = $group->with(['user','members'])->where(['id' => $request->input('group_id')])->first();
 
             return response()->json([
                 'status'    =>  true,
