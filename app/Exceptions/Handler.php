@@ -56,7 +56,9 @@ class Handler extends ExceptionHandler
             );
 
         }
-        
+        if ($request->is('api/*')) {
+            return response()->json(array('status' => false, 'message' => 'Oops! Some Server error. Please contact with server admin'));
+        }
         return parent::render($request, $exception);
     }
 }
