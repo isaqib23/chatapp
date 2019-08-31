@@ -46,19 +46,22 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
-        if($exception instanceof \Illuminate\Auth\AuthenticationException ){
-
-            return response()->json(
-                [
-                    'status' => 401,
-                    'message' => 'Unauthenticated'
-                ], 401
-            );
-
-        }
+        
         if ($request->is('api/*')) {
-            return response()->json(array('status' => false, 'message' => 'Oops! Some Server error. Please contact with server admin'));
+            if($exception instanceof \Illuminate\Auth\AuthenticationException ){
+
+                return response()->json(
+                    [
+                        'status' => 401,
+                        'message' => 'Unauthenticated'
+                    ], 401
+                );
+
+            }else{
+                return response()->json(array('status' => false, 'message' => 'Oops! Some Server error. Please contact with server admin'));
+            }
         }
+        
         return parent::render($request, $exception);
     }
 }
