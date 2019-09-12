@@ -122,11 +122,12 @@
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/resources/views/group" />
     <property name="nodejs_package_manager_path" value="npm" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="E:\Server\wamp64\www\chatapp\resources\views\group" />
       <recent name="E:\Server\wamp64\www\chatapp\resources\views\users" />
     </key>
   </component>
@@ -162,6 +163,7 @@
       <workItem from="1567087508723" duration="19514000" />
       <workItem from="1567242969790" duration="3722000" />
       <workItem from="1567521419908" duration="2513000" />
+      <workItem from="1568298398740" duration="3044000" />
     </task>
     <servers />
   </component>

@@ -6,6 +6,7 @@ use App\Libraries\ApiValidations;
 use App\User;
 use App\Group;
 use App\GroupUser;
+use App\Category;
 use Illuminate\Http\Request;
 
 class GroupController extends Controller
@@ -46,7 +47,7 @@ class GroupController extends Controller
                 'photo' => $data['picture'],
                 'user_id' => $request->input('user_id'),
                 'category_id' => $request->input('category_id'),
-                'type' => $request->input('type'),
+                'type' => 'open',
                 'description' => $request->input('description'),
             ]);
             $group->save();
@@ -108,7 +109,7 @@ class GroupController extends Controller
         $validation = $this->validator->get_owner_groups($request->all());
 
         if($validation['status']){
-            $results = $group->with(['user'])->where(['user_id' => $request->input('user_id')])->get();
+            $results = $group->with(['user','category'])->where(['user_id' => $request->input('user_id')])->get();
 
             return response()->json([
                 'status'    =>  true,
@@ -145,11 +146,41 @@ class GroupController extends Controller
         $validation = $this->validator->get_group_users($request->all());
 
         if($validation['status']){
-            $results = $group->with(['user','members'])->where(['id' => $request->input('group_id')])->first();
+            $results = $group->with(['user','members','category'])->where(['id' => $request->input('group_id')])->first();
 
             return response()->json([
                 'status'    =>  true,
                 'message'   => 'Group Users List Fetched.',
+                'response'  => $results
+            ], 200);
+        }else{
+            return response()->json($validation);
+        }
+    }
+
+    public function categories(Request $request){
+        if($request->isMethod('post')){
+            $cat = new Category([
+                'title'     => htmlspecialchars($request->input('title'))
+            ]);
+            $cat->save();
+            return redirect()->route('categories');
+        }
+        $category = new Category();
+        $data['categories'] = $category->all();
+        return view('group.category',$data);
+    }
+
+    public function get_categories(Request $request){
+        $category = new Category();
+        $validation = $this->validator->get_categories($request->all());
+
+        if($validation['status']){
+            $results = $category->all();
+
+            return response()->json([
+                'status'    =>  true,
+                'message'   => 'Categories List Fetched.',
                 'response'  => $results
             ], 200);
         }else{

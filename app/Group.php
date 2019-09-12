@@ -17,4 +17,8 @@ class Group extends Model
     public function members(){
         return $this->hasMany('App\GroupUser','group_id','id');
     }
+
+    public function category(){
+        return $this->belongsTo('App\Category','category_id');
+    }
 }

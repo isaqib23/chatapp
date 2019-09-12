@@ -58,6 +58,8 @@
                         <li><a href="profit.html">Payment Profit </a></li>
                     </ul>
                 </li>
+                <li @if(Request::segment(1) == 'categories') class="open" @endif><a href="{{ route('categories') }}"><i class="icon ti-layout-accordion-list"></i> <span>Categories</span> <span
+                            class="badge bg-danger-gradient"></span> </a></li>
             </ul>
         </div>
     </div>

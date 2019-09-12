@@ -77,8 +77,7 @@ class ApiValidations {
             'photo' => 'required|string',
             'user_id' => 'required|string',
             'description' => 'required|string',
-            'category_id' => 'required|string',
-            'type' => 'required|string',
+            'category_id' => 'required|string'
         ]);
 
 
@@ -139,6 +138,20 @@ class ApiValidations {
             'last_name' => 'required|string',
             'phone' => 'required|string',
             'address' => 'required|string',
+            'user_id' => 'required|string'
+        ]);
+
+
+        if ($validator->fails()) {
+            $errors = $validator->messages()->first();
+            return ['status' => false, 'message' => $errors];
+        }else{
+            return ['status' => true];
+        }
+    }
+
+    public function get_categories($data){
+        $validator = Validator::make($data,[
             'user_id' => 'required|string'
         ]);
 
