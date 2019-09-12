@@ -56,4 +56,19 @@ class VoucherController extends Controller
             return response()->json($validation);
         }
     }
+
+    public function delete_voucher(Request $request){
+        $validation = $this->validator->delete_voucher($request->all());
+
+        if($validation['status']){
+            $vouch = new Voucher();
+            $response = $vouch->where(['id' => $request->input('voucher_id')])->update(['status' => 'de-active']);
+            return response()->json([
+                'status'    =>  true,
+                'message'   => 'Discount Voucher Deleted successfully',
+            ], 200);
+        }else{
+            return response()->json($validation);
+        }
+    }
 }

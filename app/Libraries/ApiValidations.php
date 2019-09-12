@@ -193,4 +193,19 @@ class ApiValidations {
             return ['status' => true];
         }
     }
+
+    public function delete_voucher($data){
+        $validator = Validator::make($data,[
+            'user_id' => 'required|string',
+            'voucher_id' => 'required|string'
+        ]);
+
+
+        if ($validator->fails()) {
+            $errors = $validator->messages()->first();
+            return ['status' => false, 'message' => $errors];
+        }else{
+            return ['status' => true];
+        }
+    }
 }

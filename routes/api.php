@@ -39,6 +39,7 @@ Route::group([
         Route::post('get_categories', 'GroupController@get_categories');
         Route::post('create_voucher', 'VoucherController@create');
         Route::post('get_vouchers', 'VoucherController@get_vouchers');
+        Route::post('delete_voucher', 'VoucherController@delete_voucher');
     });
 });
 
