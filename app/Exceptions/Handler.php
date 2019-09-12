@@ -47,7 +47,7 @@ class Handler extends ExceptionHandler
     public function render($request, Exception $exception)
     {
 
-        /*if ($request->is('api/*')) {
+        if ($request->is('api/*')) {
             if($exception instanceof \Illuminate\Auth\AuthenticationException ){
 
                 return response()->json(
@@ -60,7 +60,7 @@ class Handler extends ExceptionHandler
             }else{
                 return response()->json(array('status' => false, 'message' => 'Oops! Some Server error. Please contact with server admin'));
             }
-        }*/
+        }
 
         return parent::render($request, $exception);
     }

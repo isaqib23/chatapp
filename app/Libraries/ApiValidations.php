@@ -163,4 +163,34 @@ class ApiValidations {
             return ['status' => true];
         }
     }
+
+    public function create_voucher($data){
+        $validator = Validator::make($data,[
+            'percentage' => 'required|string',
+            'user_id' => 'required|string',
+            'group_id' => 'required|string'
+        ]);
+
+
+        if ($validator->fails()) {
+            $errors = $validator->messages()->first();
+            return ['status' => false, 'message' => $errors];
+        }else{
+            return ['status' => true];
+        }
+    }
+
+    public function voucher($data){
+        $validator = Validator::make($data,[
+            'user_id' => 'required|string'
+        ]);
+
+
+        if ($validator->fails()) {
+            $errors = $validator->messages()->first();
+            return ['status' => false, 'message' => $errors];
+        }else{
+            return ['status' => true];
+        }
+    }
 }

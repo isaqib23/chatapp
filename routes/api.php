@@ -37,6 +37,8 @@ Route::group([
         Route::post('groups_members', 'GroupController@get_group_users');
         Route::post('group_detail', 'GroupController@group_detail');
         Route::post('get_categories', 'GroupController@get_categories');
+        Route::post('create_voucher', 'VoucherController@create');
+        Route::post('get_vouchers', 'VoucherController@get_vouchers');
     });
 });
 
