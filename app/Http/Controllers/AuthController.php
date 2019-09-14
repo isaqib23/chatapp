@@ -140,7 +140,7 @@ class AuthController extends Controller
             return response()->json([
                 'status'    =>  true,
                 'message'   => 'Your Profile Update Successfully!',
-                'reponse'   => $user
+                'response'   => $user
             ], 200);
         }else{
             return response()->json($validation);
