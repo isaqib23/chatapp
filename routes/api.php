@@ -29,11 +29,13 @@ Route::group([
         Route::post('logout', 'AuthController@logout');
         Route::post('user', 'AuthController@user');
         Route::post('update_profile', 'AuthController@update');
+        Route::post('change_password', 'AuthController@change_password');
 
         // Group Routes
         Route::post('create_group', 'GroupController@create');
         Route::post('join_group', 'GroupController@join');
         Route::post('owner_groups', 'GroupController@get_owner_groups');
+        Route::post('other_groups', 'GroupController@get_other_groups');
         Route::post('groups_members', 'GroupController@get_group_users');
         Route::post('group_detail', 'GroupController@group_detail');
         Route::post('get_categories', 'GroupController@get_categories');

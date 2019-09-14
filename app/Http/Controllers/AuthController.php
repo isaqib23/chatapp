@@ -146,4 +146,24 @@ class AuthController extends Controller
             return response()->json($validation);
         }
     }
+
+    public function change_password(Request $request)
+    {
+        $user = new User();
+        $validation = $this->validator->change_password($request->all());
+
+        if($validation['status']){
+            $get_user = User::where('id',$request->input('user_id'))->first();
+            $get_user->password = bcrypt($request->input('password'));
+
+            $get_user->save();
+
+            return response()->json([
+                'status'    =>  true,
+                'message'   => 'Your Password Update Successfully!',
+            ], 200);
+        }else{
+            return response()->json($validation);
+        }
+    }
 }

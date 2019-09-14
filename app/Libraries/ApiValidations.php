@@ -77,7 +77,8 @@ class ApiValidations {
             'photo' => 'required|string',
             'user_id' => 'required|string',
             'description' => 'required|string',
-            'category_id' => 'required|string'
+            'category_id' => 'required|string',
+            'type'      => 'required|string',
         ]);
 
 
@@ -198,6 +199,21 @@ class ApiValidations {
         $validator = Validator::make($data,[
             'user_id' => 'required|string',
             'voucher_id' => 'required|string'
+        ]);
+
+
+        if ($validator->fails()) {
+            $errors = $validator->messages()->first();
+            return ['status' => false, 'message' => $errors];
+        }else{
+            return ['status' => true];
+        }
+    }
+
+    public function change_password($data){
+        $validator = Validator::make($data,[
+            'user_id' => 'required|string',
+            'password' => 'required|string|min:6'
         ]);
 
 

@@ -47,7 +47,7 @@ class GroupController extends Controller
                 'photo' => $data['picture'],
                 'user_id' => $request->input('user_id'),
                 'category_id' => $request->input('category_id'),
-                'type' => 'open',
+                'type' => $request->input('type'),
                 'description' => $request->input('description'),
             ]);
             $group->save();
@@ -181,6 +181,26 @@ class GroupController extends Controller
             return response()->json([
                 'status'    =>  true,
                 'message'   => 'Categories List Fetched.',
+                'response'  => $results
+            ], 200);
+        }else{
+            return response()->json($validation);
+        }
+    }
+
+    public function get_other_groups(Request $request)
+    {
+        $group = new Group();
+        $user_group = new GroupUser();
+        $validation = $this->validator->get_owner_groups($request->all());
+
+        if($validation['status']){
+            $groups = $user_group->where(['user_id' => $request->input('user_id')])->get();
+            $results = $group->with(['user','category'])->whereIn('id',$groups->pluck('group_id'))->get();
+
+            return response()->json([
+                'status'    =>  true,
+                'message'   => 'Owner Groups List Fetched.',
                 'response'  => $results
             ], 200);
         }else{
