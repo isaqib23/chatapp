@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Libraries\ApiValidations;
+use App\Libraries\StripeData;
 use App\User;
 use App\Group;
 use App\GroupUser;
@@ -12,12 +13,14 @@ use Illuminate\Http\Request;
 class GroupController extends Controller
 {
     protected $validator;
+    protected $stripe;
 
     public function __construct()
     {
         $this->middleware('auth');
 
         $this->validator = new ApiValidations();
+        $this->stripe = new StripeData();
     }
 
     public function index(){
@@ -86,17 +89,26 @@ class GroupController extends Controller
                 ], 200);
             }
 
-            $group_user = new GroupUser([
-                'group_id' => $request->input('group_id'),
-                'user_id' => $request->input('user_id'),
-                'status' => 'join'
-            ]);
-            $group_user->save();
-            //$user->notify(new SignupActivate($user));
-            return response()->json([
-                'status'    =>  true,
-                'message'   => 'Thanks! you have successfully Join Group.',
-            ], 200);
+            // Create Group Subscription
+            $response = $this->stripe->create_group_subscription($request->all(),$check);
+            if($response['status']) {
+                $group_user = new GroupUser([
+                    'group_id' => $request->input('group_id'),
+                    'user_id' => $request->input('user_id'),
+                    'status' => 'join'
+                ]);
+                $group_user->save();
+                //$user->notify(new SignupActivate($user));
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Thanks! you have successfully Join Group.',
+                ], 200);
+            }else{
+                return response()->json([
+                    'status' => false,
+                    'message' => 'You cannot Join group at this time. Please contact with admin',
+                ], 200);
+            }
         }else{
             return response()->json($validation);
         }
