@@ -224,4 +224,19 @@ class ApiValidations {
             return ['status' => true];
         }
     }
+
+    public function cancel_subscription($data){
+        $validator = Validator::make($data,[
+            'user_id' => 'required|string',
+            'membership_id' => 'required|string|'
+        ]);
+
+
+        if ($validator->fails()) {
+            $errors = $validator->messages()->first();
+            return ['status' => false, 'message' => $errors];
+        }else{
+            return ['status' => true];
+        }
+    }
 }

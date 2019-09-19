@@ -46,7 +46,7 @@ class VoucherController extends Controller
 
         if($validation['status']){
             $vouch = new Voucher();
-            $response = $vouch->with(['group','user'])->where(['status' => 'active'])->get();
+            $response = $vouch->with(['group','user'])->where(['status' => 'active', 'user_id' => $request->input('user_id')])->get();
             return response()->json([
                 'status'    =>  true,
                 'message'   => 'Discount Voucher Lists Fetched successfully',

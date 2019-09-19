@@ -90,7 +90,7 @@ class GroupController extends Controller
             }
 
             // Create Group Subscription
-            $response = $this->stripe->create_group_subscription($request->all(),$check);
+            $response = $this->stripe->create_group_subscription($request->all());
             if($response['status']) {
                 $group_user = new GroupUser([
                     'group_id' => $request->input('group_id'),
@@ -122,11 +122,24 @@ class GroupController extends Controller
 
         if($validation['status']){
             $results = $group->with(['user','category'])->where(['user_id' => $request->input('user_id')])->get();
+            $results_mapped = $results->map(function ($item, $key) {
+                $item['isJoined'] = 'no';
+                return $item;
+            });
+            //$results->put('isJoined', 'no');
+            $user_group = $user_group->where(['user_id' => $request->input('user_id')])->get();
+            $joined_groups = $group->with(['user','category'])->whereIn('id',$user_group->pluck('group_id'))->get();
 
+            $joined_mapped = $joined_groups->map(function ($item, $key) {
+                $item['isJoined'] = 'yes';
+                return $item;
+            });
+
+            $response = $results_mapped->merge($joined_mapped);
             return response()->json([
                 'status'    =>  true,
                 'message'   => 'Owner Groups List Fetched.',
-                'response'  => $results
+                'response'  => $response
             ], 200);
         }else{
             return response()->json($validation);

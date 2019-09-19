@@ -45,6 +45,9 @@ Route::group([
 
         //Stripe Routes
         Route::post('get_stripe_settings', 'ApiController@get_stripe_settings');
+        Route::post('cancel_subscription', 'ApiController@cancel_subscription');
+        Route::post('get_subscriptions', 'ApiController@get_subscriptions');
+        Route::post('get_payment_history', 'ApiController@get_payment_history');
     });
 });
 

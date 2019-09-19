@@ -2,6 +2,7 @@
 namespace App\vendor\stripe\stripe_php\init;
 namespace App\Libraries;
 
+use App\Group;
 use App\User;
 use Stripe\Stripe;
 use App\GroupSubscription;
@@ -31,10 +32,11 @@ class StripeData {
         );
     }
 
-    public function create_group_subscription($data,$group){
+    public function create_group_subscription($data){
         $str = $this->get_stripe_settings();
+        $group = Group::find($data['group_id']);
         Stripe::setApiKey($str['settings']->secret);
-
+        //$data['token'] = $this->generete_token();
         // Get User
         $user = User::where(['id' => $data['user_id']])->first();
         //Create Customer
@@ -94,9 +96,40 @@ class StripeData {
             'plan_id'               => $plan['id'],
             'subscription_id'       => $subscription['id'],
             'transaction_id'            => $charge['id'],
-            'next_charge_date'      => $upcoming->date
+            'next_charge_date'      => $upcoming->next_payment_attempt
         ]);
         $sub->save();
 
         return ['status' => true];
-    }}
+    }
+
+    public function cancel_subscription($data,$get_subscriptions){
+        $subscription = new GroupSubscription();
+        $ref_id = $data['membership_id'];
+        $str = $this->get_stripe_settings();
+
+        \Stripe\Stripe::setApiKey($str['settings']->secret);
+        $sub = \Stripe\Subscription::retrieve($get_subscriptions->subscription_id);
+        $sub->cancel();
+
+        $subscription->where(['id' => $ref_id])->update(['status' => 'cancelled']);
+
+        return ['status' => true];
+    }
+
+    public function generete_token(){
+        $str = $this->get_stripe_settings();
+        \Stripe\Stripe::setApiKey($str['settings']->secret);
+
+        $token = \Stripe\Token::create([
+            'card' => [
+                'number' => '4242424242424242',
+                'exp_month' => 9,
+                'exp_year' => 2020,
+                'cvc' => '314'
+            ]
+        ]);
+
+        return $token->id;
+    }
+}
