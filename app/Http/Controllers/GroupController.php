@@ -232,4 +232,38 @@ class GroupController extends Controller
             return response()->json($validation);
         }
     }
+
+    public function update(Request $request)
+    {
+        $group = new Group();
+        $validation = $this->validator->group_update($request->all());
+
+        if($validation['status']){
+            $group = $group->find($request->input('group_id'));
+            // Upload Group Image
+            if($request->has('photo')) {
+                define('UPLOAD_DIR', public_path() . '/images/');
+                $image = base64_decode($request->input('photo'));
+                $file = UPLOAD_DIR . md5(date('Y-m-d H:i:s')) . '.jpg';
+                file_put_contents($file, $image);
+                $group->photo = str_replace(public_path() . '/images/', '', $file);
+            }
+
+            $group->name = $request->input('name');
+            $group->price = $request->input('price');
+            $group->user_id = $request->input('user_id');
+            $group->category_id = $request->input('category_id');
+            $group->type = $request->input('type');
+            $group->description = $request->input('description');
+            $group->save();
+            //$user->notify(new SignupActivate($user));
+            return response()->json([
+                'status'    =>  true,
+                'message'   => 'Group has been successfully Updated.',
+                'response'  => $group
+            ], 200);
+        }else{
+            return response()->json($validation);
+        }
+    }
 }

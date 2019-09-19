@@ -239,4 +239,24 @@ class ApiValidations {
             return ['status' => true];
         }
     }
+
+    public function group_update($data){
+        $validator = Validator::make($data,[
+            'name' => 'required|string',
+            'price' => 'required|string',
+            'photo' => 'required|string',
+            'user_id' => 'required|string',
+            'group_id' => 'required|string',
+            'description' => 'required|string',
+            'category_id' => 'required|string',
+            'type'      => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            $errors = $validator->messages()->first();
+            return ['status' => false, 'message' => $errors];
+        }else{
+            return ['status' => true];
+        }
+    }
 }
