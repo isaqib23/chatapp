@@ -220,13 +220,19 @@ class GroupController extends Controller
         $validation = $this->validator->get_owner_groups($request->all());
 
         if($validation['status']){
-            $groups = $user_group->where(['user_id' => $request->input('user_id')])->get();
-            $results = $group->with(['user','category'])->whereIn('id',$groups->pluck('group_id'))->get();
+            $results = $group->with(['user','category'])->where('user_id' ,'<>', $request->input('user_id'))->get();
+            $selected = [];
+            foreach ($results as $key => $item) {
+                $groups = $user_group->where(['user_id' => $request->input('user_id'), 'group_id' => $item->id])->first();
+                if (!$groups) {
+                    $selected[] = $results->pull($key);
+                }
+            }
 
             return response()->json([
                 'status'    =>  true,
                 'message'   => 'Owner Groups List Fetched.',
-                'response'  => $results
+                'response'  => $selected
             ], 200);
         }else{
             return response()->json($validation);

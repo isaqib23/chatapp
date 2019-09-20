@@ -61,7 +61,7 @@ class AuthController extends Controller
             $credentials['deleted_at'] = null;
             if (!Auth::attempt($credentials))
                 return response()->json([
-                    'status'    =>  true,
+                    'status'    =>  false,
                     'message' => 'Invalid Credentials'
                 ], 200);
             $user = $request->user();
