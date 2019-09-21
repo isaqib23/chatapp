@@ -90,7 +90,12 @@ class GroupController extends Controller
             }
 
             // Create Group Subscription
-            $response = $this->stripe->create_group_subscription($request->all());
+            $token = $this->stripe->generete_token($request->all());
+            if(!$token['status']){
+                return response()->json($token);
+            }
+
+            $response = $this->stripe->create_group_subscription($request->all(),$token['token']);
             if($response['status']) {
                 $group_user = new GroupUser([
                     'group_id' => $request->input('group_id'),

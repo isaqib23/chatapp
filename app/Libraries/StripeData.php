@@ -32,7 +32,7 @@ class StripeData {
         );
     }
 
-    public function create_group_subscription($data){
+    public function create_group_subscription($data,$token){
         $str = $this->get_stripe_settings();
         $group = Group::find($data['group_id']);
         Stripe::setApiKey($str['settings']->secret);
@@ -41,7 +41,7 @@ class StripeData {
         $user = User::where(['id' => $data['user_id']])->first();
         //Create Customer
         $customer = \Stripe\Customer::create([
-            "source" => $data['token'],
+            "source" => $token,
             "description" => $user->first_name."'s Group Join Fee",
             "email"     => $user->email
         ]);
@@ -117,19 +117,24 @@ class StripeData {
         return ['status' => true];
     }
 
-    public function generete_token(){
+    public function generete_token($data){
         $str = $this->get_stripe_settings();
         \Stripe\Stripe::setApiKey($str['settings']->secret);
 
-        $token = \Stripe\Token::create([
-            'card' => [
-                'number' => '4242424242424242',
-                'exp_month' => 9,
-                'exp_year' => 2020,
-                'cvc' => '314'
-            ]
-        ]);
+        try {
+            $token = \Stripe\Token::create([
+                'card' => [
+                    'number' => $data['card_no'],
+                    'exp_month' => $data['card_month'],
+                    'exp_year' => $data['card_year'],
+                    'cvc' => $data['card_cvv']
+                ]
+            ]);
+            return ['status' => true, 'token' => $token->id];
+        } catch (\Exception $e) {
+            return ['status' => false, 'message' => $e->getMessage()];
+        }
 
-        return $token->id;
+        //return $token->id;
     }
 }

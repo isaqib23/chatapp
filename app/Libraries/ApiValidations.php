@@ -93,7 +93,11 @@ class ApiValidations {
     public function join_group($data){
         $validator = Validator::make($data,[
             'group_id' => 'required|string',
-            'user_id' => 'required|string'
+            'user_id' => 'required|string',
+            'card_no' => 'required|string',
+            'card_month' => 'required|string',
+            'card_year' => 'required|string',
+            'card_cvv' => 'required|string'
         ]);
 
 
