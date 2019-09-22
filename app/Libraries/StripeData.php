@@ -3,6 +3,7 @@ namespace App\vendor\stripe\stripe_php\init;
 namespace App\Libraries;
 
 use App\Group;
+use App\GroupUser;
 use App\User;
 use Stripe\Stripe;
 use App\GroupSubscription;
@@ -105,6 +106,7 @@ class StripeData {
 
     public function cancel_subscription($data,$get_subscriptions){
         $subscription = new GroupSubscription();
+        $user_group = new GroupUser();
         $ref_id = $data['membership_id'];
         $str = $this->get_stripe_settings();
 
@@ -113,6 +115,7 @@ class StripeData {
         $sub->cancel();
 
         $subscription->where(['id' => $ref_id])->update(['status' => 'cancelled']);
+        $user_group->where(['user_id' => $data['user_id'], 'group_id' => $get_subscriptions->group_id])->update(['status' => 'remove']);
 
         return ['status' => true];
     }

@@ -263,4 +263,22 @@ class ApiValidations {
             return ['status' => true];
         }
     }
+
+    public function send_message($data){
+        $validator = Validator::make($data,[
+            'group_id' => 'required|string',
+            'user_id' => 'required|string',
+            'message' => 'required|string',
+            'type' => 'required|string',
+            'text_type' => 'required|string'
+        ]);
+
+
+        if ($validator->fails()) {
+            $errors = $validator->messages()->first();
+            return ['status' => false, 'message' => $errors];
+        }else{
+            return ['status' => true];
+        }
+    }
 }

@@ -97,10 +97,12 @@ class GroupController extends Controller
 
             $response = $this->stripe->create_group_subscription($request->all(),$token['token']);
             if($response['status']) {
+                $get_group = $group->where(['id' => $request->input('group_id')])->first();
                 $group_user = new GroupUser([
                     'group_id' => $request->input('group_id'),
                     'user_id' => $request->input('user_id'),
-                    'status' => 'join'
+                    'status' => 'join',
+                    'can_send_text' => ($get_group->type == 'open') ? 'yes' : 'no'
                 ]);
                 $group_user->save();
                 //$user->notify(new SignupActivate($user));
@@ -132,7 +134,7 @@ class GroupController extends Controller
                 return $item;
             });
             //$results->put('isJoined', 'no');
-            $user_group = $user_group->where(['user_id' => $request->input('user_id')])->get();
+            $user_group = $user_group->where(['user_id' => $request->input('user_id'), 'status' => 'join'])->get();
             $joined_groups = $group->with(['user','category'])->whereIn('id',$user_group->pluck('group_id'))->get();
 
             $joined_mapped = $joined_groups->map(function ($item, $key) {
@@ -158,7 +160,7 @@ class GroupController extends Controller
         $validation = $this->validator->get_group_users($request->all());
 
         if($validation['status']){
-            $results = $user_group->with(['user','group'])->where(['group_id' => $request->input('group_id')])->get();
+            $results = $user_group->with(['user','group'])->where(['group_id' => $request->input('group_id'),'status' => 'join'])->get();
 
             return response()->json([
                 'status'    =>  true,
@@ -228,7 +230,7 @@ class GroupController extends Controller
             $results = $group->with(['user','category'])->where('user_id' ,'<>', $request->input('user_id'))->get();
             $selected = [];
             foreach ($results as $key => $item) {
-                $groups = $user_group->where(['user_id' => $request->input('user_id'), 'group_id' => $item->id])->first();
+                $groups = $user_group->where(['user_id' => $request->input('user_id'), 'group_id' => $item->id,'status' => 'join'])->first();
                 if (!$groups) {
                     $selected[] = $results->pull($key);
                 }
