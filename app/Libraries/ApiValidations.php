@@ -284,7 +284,8 @@ class ApiValidations {
     public function single_conversation($data){
         $validator = Validator::make($data,[
             'user_id' => 'required|string',
-            'receiver_id' => 'required|string'
+            'receiver_id' => 'required|string',
+            'page' => 'required|string'
         ]);
 
 
@@ -299,7 +300,8 @@ class ApiValidations {
     public function group_conversation($data){
         $validator = Validator::make($data,[
             'user_id' => 'required|string',
-            'group_id' => 'required|string'
+            'group_id' => 'required|string',
+            'page' => 'required|string'
         ]);
 
 
