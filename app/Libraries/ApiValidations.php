@@ -266,11 +266,40 @@ class ApiValidations {
 
     public function send_message($data){
         $validator = Validator::make($data,[
-            'group_id' => 'required|string',
             'user_id' => 'required|string',
             'message' => 'required|string',
             'type' => 'required|string',
             'text_type' => 'required|string'
+        ]);
+
+
+        if ($validator->fails()) {
+            $errors = $validator->messages()->first();
+            return ['status' => false, 'message' => $errors];
+        }else{
+            return ['status' => true];
+        }
+    }
+
+    public function single_conversation($data){
+        $validator = Validator::make($data,[
+            'user_id' => 'required|string',
+            'receiver_id' => 'required|string'
+        ]);
+
+
+        if ($validator->fails()) {
+            $errors = $validator->messages()->first();
+            return ['status' => false, 'message' => $errors];
+        }else{
+            return ['status' => true];
+        }
+    }
+
+    public function group_conversation($data){
+        $validator = Validator::make($data,[
+            'user_id' => 'required|string',
+            'group_id' => 'required|string'
         ]);
 
 

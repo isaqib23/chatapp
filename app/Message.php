@@ -9,11 +9,15 @@ class Message extends Model
     protected $table = 'messages';
 
     protected $fillable = [
-        'group_id', 'user_id', 'status', 'message', 'type'
+        'group_id', 'user_id', 'status', 'message', 'type', 'receiver_id', 'text_type'
     ];
 
     public function user(){
         return $this->belongsTo('App\User');
+    }
+
+    public function receiver(){
+        return $this->belongsTo('App\User','receiver_id');
     }
 
     public function group(){

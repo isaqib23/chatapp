@@ -22,15 +22,28 @@ class MessageController extends Controller
         $group = new Group();
         $user_group = new GroupUser();
         $validation = $this->validator->send_message($request->all());
-
+//echo "<pre>";print_r($request->all());exit;
         if($validation['status']){
             if($request->input('type') == 'group') {
+                if(empty($request->input('group_id'))){
+                    return response()->json([
+                        'status' => false,
+                        'message' => 'Please enter Group ID',
+                    ], 200);
+                }
                 //Check is Group Owner
                 $check = $user_group->where(['user_id' => $request->input('user_id'), 'id' => $request->input('group_id')])->first();
                 if ($check->can_send_text == 'no') {
                     return response()->json([
                         'status' => false,
                         'message' => 'You cannot send message to this group.',
+                    ], 200);
+                }
+            }else{
+                if(empty($request->input('receiver_id'))){
+                    return response()->json([
+                        'status' => false,
+                        'message' => 'Please enter Receiver ID',
                     ], 200);
                 }
             }
@@ -60,8 +73,62 @@ class MessageController extends Controller
         }
     }
 
-    public function get_group_messages(){
+    public function get_messages(Request $request){
+        $messages = new Message();
+        $validation = $this->validator->voucher($request->all());
 
+        if($validation['status']){
+            $response = $messages->with(['user','receiver'])->groupBy('receiver_id')->orderBy('id','desc')->get();
+            return response()->json([
+                'status'    =>  true,
+                'message'   => 'Messages List Fetched Successfully!',
+                'response'  => $response
+            ], 200);
+        }else{
+            return response()->json($validation);
+        }
+    }
+
+    public function get_single_conversation(Request $request){
+        $messages = new Message();
+        $validation = $this->validator->single_conversation($request->all());
+
+        if($validation['status']){
+            // Update Seen Status
+            $messages->where(['user_id' => $request->input('user_id'), 'receiver_id' => $request->input('receiver_id')])->update(['status' => 'seen']);
+
+            $response = $messages->with(['user','receiver'])
+                ->where(['user_id' => $request->input('user_id'), 'receiver_id' => $request->input('receiver_id')])
+                ->orderBy('id','desc')->get();
+            return response()->json([
+                'status'    =>  true,
+                'message'   => 'Messages List Fetched Successfully!',
+                'response'  => $response
+            ], 200);
+        }else{
+            return response()->json($validation);
+        }
+    }
+
+    public function get_group_conversation(Request $request){
+        $messages = new Message();
+        $validation = $this->validator->group_conversation($request->all());
+
+        if($validation['status']){
+            // Update Seen Status
+            $messages->where(['user_id' => $request->input('user_id'), 'group_id' => $request->input('group_id')])->update(['status' => 'seen']);
+
+            $response = $messages->with(['user','group'])
+                ->where(['user_id' => $request->input('user_id'), 'group_id' => $request->input('group_id')])
+                ->orderBy('id','desc')->paginate(2,['*'],'page',$request->input('page'));
+            return response()->json([
+                'status'    =>  true,
+                'message'   => 'Messages List Fetched Successfully!',
+                'response'  => $response
+            ], 200);
+        }else{
+            return response()->json($validation);
+        }
     }
 
     public function save_image($data){

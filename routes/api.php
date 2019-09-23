@@ -52,6 +52,9 @@ Route::group([
 
         // Messages Routes
         Route::post('send_message', 'MessageController@create');
+        Route::post('get_messages', 'MessageController@get_messages');
+        Route::post('get_single_conversation', 'MessageController@get_single_conversation');
+        Route::post('get_group_conversation', 'MessageController@get_group_conversation');
     });
 });
 
