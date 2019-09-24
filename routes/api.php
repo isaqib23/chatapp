@@ -43,6 +43,8 @@ Route::group([
         Route::post('get_vouchers', 'VoucherController@get_vouchers');
         Route::post('delete_voucher', 'VoucherController@delete_voucher');
         Route::post('update_group', 'GroupController@update');
+        Route::post('remove_group_member', 'GroupController@remove_group_member');
+        Route::post('update_group_member', 'GroupController@update_group_member');
 
         //Stripe Routes
         Route::post('get_stripe_settings', 'ApiController@get_stripe_settings');

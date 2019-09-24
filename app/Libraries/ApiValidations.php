@@ -312,4 +312,19 @@ class ApiValidations {
             return ['status' => true];
         }
     }
+
+    public function remove_group_member($data){
+        $validator = Validator::make($data,[
+            'user_id' => 'required|string',
+            'group_id' => 'required|string'
+        ]);
+
+
+        if ($validator->fails()) {
+            $errors = $validator->messages()->first();
+            return ['status' => false, 'message' => $errors];
+        }else{
+            return ['status' => true];
+        }
+    }
 }

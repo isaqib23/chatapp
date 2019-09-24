@@ -279,4 +279,40 @@ class GroupController extends Controller
             return response()->json($validation);
         }
     }
+
+    public function remove_group_member(Request $request)
+    {
+        $group = new Group();
+        $user_group = new GroupUser();
+        $validation = $this->validator->remove_group_member($request->all());
+
+        if($validation['status']){
+            $user_group->where(['user_id' => $request->input('user_id'), 'group_id' => $request->input('group_id')])->update(['status' => 'leave']);
+
+            return response()->json([
+                'status'    =>  true,
+                'message'   => 'Member removed from group successfully!',
+            ], 200);
+        }else{
+            return response()->json($validation);
+        }
+    }
+
+    public function update_group_member(Request $request)
+    {
+        $group = new Group();
+        $user_group = new GroupUser();
+        $validation = $this->validator->remove_group_member($request->all());
+
+        if($validation['status']){
+            $user_group->where(['user_id' => $request->input('user_id'), 'group_id' => $request->input('group_id')])->update(['can_send_text' => $request->input('role')]);
+
+            return response()->json([
+                'status'    =>  true,
+                'message'   => 'Member role updated successfully!',
+            ], 200);
+        }else{
+            return response()->json($validation);
+        }
+    }
 }
