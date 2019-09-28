@@ -37,6 +37,17 @@ class GroupController extends Controller
         $validation = $this->validator->group($request->all());
 
         if($validation['status']){
+            $user = User::where('id',$request->input('user_id'))->first();
+            //echo "<pre>";print_r($user);exit;
+            /*if($user->stripe_account == Null) {
+                //Create Stripe Account
+                $stripeAccount = $this->stripe->create_stripe_account($user->email);
+                if($stripeAccount['status']) {
+                    User::where('id', $request->input('user_id'))->update(['stripe_account' => $stripeAccount['account']]);
+                }else{
+                    return response()->json($stripeAccount);
+                }
+            }*/
             // Upload Group Image
             define('UPLOAD_DIR', public_path().'/images/');
             $image = base64_decode($request->input('photo'));
@@ -129,7 +140,9 @@ class GroupController extends Controller
 
         if($validation['status']){
             $results = $group->with(['user','category'])->where(['user_id' => $request->input('user_id')])->get();
-            $results_mapped = $results->map(function ($item, $key) {
+            $results_mapped = $results->map(function ($item, $key) use($user_group) {
+                $count = $user_group->where(['group_id' => $item->id, 'status' => 'join'])->count();
+                $item['members_count'] = $count;
                 $item['isJoined'] = 'no';
                 return $item;
             });
@@ -137,7 +150,9 @@ class GroupController extends Controller
             $user_group = $user_group->where(['user_id' => $request->input('user_id'), 'status' => 'join'])->get();
             $joined_groups = $group->with(['user','category'])->whereIn('id',$user_group->pluck('group_id'))->get();
 
-            $joined_mapped = $joined_groups->map(function ($item, $key) {
+            $joined_mapped = $joined_groups->map(function ($item, $key) use($user_group) {
+                $count = $user_group->where(['group_id' => $item->id, 'status' => 'join'])->count();
+                $item['members_count'] = $count;
                 $item['isJoined'] = 'yes';
                 return $item;
             });

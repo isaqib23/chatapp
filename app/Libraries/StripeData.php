@@ -19,12 +19,14 @@ class StripeData {
             $settings->currency = config('services.stripe.currency');
             $settings->client_id = config('services.stripe.test.client_id');
             $settings->api_version = config('services.stripe.api_version');
+            $settings->percentage = config('services.stripe.percentage');
         }else{
             $settings->secret = config('services.stripe.prod.secret');
             $settings->publish = config('services.stripe.prod.publish');
             $settings->currency = config('services.stripe.currency');
             $settings->client_id = config('services.stripe.prod.client_id');
             $settings->api_version = config('services.stripe.api_version');
+            $settings->percentage = config('services.stripe.percentage');
         }
 
         return array(
@@ -137,7 +139,26 @@ class StripeData {
         } catch (\Exception $e) {
             return ['status' => false, 'message' => $e->getMessage()];
         }
+    }
 
-        //return $token->id;
+    public function create_stripe_account($email){
+        $str = $this->get_stripe_settings();
+        \Stripe\Stripe::setApiKey($str['settings']->secret);
+
+        try {
+            $str = $this->get_stripe_settings();
+            \Stripe\Stripe::setApiKey($str['settings']->secret);
+
+            $account = \Stripe\Account::create([
+                "type" => "custom",
+                "country" => "US",
+                "email" => $email,
+                "business_type" => "individual",
+                "requested_capabilities" => ["card_payments", "transfers"],
+            ]);
+            return ['status' => true, 'account' => $account->id];
+        } catch (\Exception $e) {
+            return ['status' => false, 'message' => $e->getMessage()];
+        }
     }
 }

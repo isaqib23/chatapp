@@ -41,6 +41,7 @@ return [
         'mode'   => env('STRIPE_MODE'),
         'currency'   => env('STRIPE_CURRENCY'),
         'api_version'   => env('STRIPE_VERSION'),
+        'percentage'   => env('STRIPE_PERCENTAGE'),
         'prod'   => [
             'publish' => env('STRIPE_PROD_PUBLISH'),
             'secret' => env('STRIPE_PROD_SECRET'),

@@ -75,14 +75,26 @@ class MessageController extends Controller
 
     public function get_messages(Request $request){
         $messages = new Message();
+        $group_users = new GroupUser();
         $validation = $this->validator->voucher($request->all());
 
         if($validation['status']){
-            $response = $messages->with(['user','receiver'])->groupBy('receiver_id')->orderBy('id','desc')->get();
+            $user_id = $request->input('user_id');
+            $results = \DB::select("select DISTINCT `receiver_id`  from `messages` where (`user_id` = $user_id  and `type` = 'single') or (`receiver_id` = $user_id and `type` = 'single') order by `id` DESC");
+            $receivers = [];
+            foreach ($results as $key => $value){
+                array_push($receivers,$value->receiver_id);
+            }
+            $response = $messages->with(['user','receiver'])
+                ->whereIn('receiver_id',$receivers)
+                ->orderBy('id','desc')
+                ->get()->unique('receiver_id');
+
+            //echo "<pre>";print_r($receivers);exit;
             return response()->json([
                 'status'    =>  true,
                 'message'   => 'Messages List Fetched Successfully!',
-                'response'  => $response
+                'response'  => $response->values()->all()
             ], 200);
         }else{
             return response()->json($validation);
