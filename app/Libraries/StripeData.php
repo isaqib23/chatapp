@@ -38,30 +38,17 @@ class StripeData {
     public function create_group_subscription($data,$token){
         $str = $this->get_stripe_settings();
         $group = Group::find($data['group_id']);
-        Stripe::setApiKey($str['settings']->secret);
+        Stripe::setApiKey('sk_test_HcWAVbzddmGh0edPiwfCqQAH00c0gPi0R1');
         //$data['token'] = $this->generete_token();
         // Get User
         $user = User::where(['id' => $data['user_id']])->first();
-        echo "<pre>";print_r(// Fetching an account just needs the ID as a parameter
-            \Stripe\Account::retrieve("acct_1FO2UMKNtdJ5SsDE"));exit;
+
         //Create Customer
-        $custo = \Stripe\Customer::create([
+        $customer = \Stripe\Customer::create([
             "source" => $token,
             "description" => $user->first_name."'s Group Join Fee",
             "email"     => $user->email
-        ]);
-
-        $token = \Stripe\Token::create(
-            ["customer" => $custo['id']],
-            ["stripe_account" => "acct_1FO2UMKNtdJ5SsDE"]);
-
-        $customer = \Stripe\Customer::create([
-            "source" => $token['id'],
-            "description" => $user->first_name."'s Group Join Fee",
-
-        ], ['stripe_account' => 'acct_1FO2UMKNtdJ5SsDE']);
-
-
+        ],["api_key" => "sk_test_HcWAVbzddmGh0edPiwfCqQAH00c0gPi0R1"]);
 
         // Getting Card Info
         $card_count = count($customer['sources']['data']);
@@ -71,7 +58,7 @@ class StripeData {
         $stripe_product = \Stripe\Product::create([
             'name' => $group->name,
             'type' => 'service',
-        ], ['stripe_account' => 'acct_1FO2UMKNtdJ5SsDE']);
+        ]);
 
         $plan = \Stripe\Plan::create([
             'product' => $stripe_product['id'],
@@ -79,7 +66,8 @@ class StripeData {
             'interval' => 'month',        //year
             'currency' => $str['settings']->currency,
             'amount' => bcmul($group->price, 100)
-        ], ['stripe_account' => 'acct_1FO2UMKNtdJ5SsDE']);
+        ]);
+
 
         $subscription = \Stripe\Subscription::create([
             "customer" => $customer['id'],
@@ -88,7 +76,7 @@ class StripeData {
             ],
             "expand" => ["latest_invoice.payment_intent"],
             "application_fee_percent" => 10,
-        ], ["stripe_account" => "acct_1FO2UMKNtdJ5SsDE"]);
+        ], ["stripe_account" => "acct_1FO48AKPT2oQu4r6"]);
 
         /*$subscription = \Stripe\Subscription::create([
             'customer' => $customer['id'],
@@ -112,7 +100,7 @@ class StripeData {
             'product_id'        => $stripe_product['id'],
             'plan_id'               => $plan['id'],
             'subscription_id'       => $subscription['id'],
-            'transaction_id'            => $charge['id'],
+            'transaction_id'            => '',
             'next_charge_date'      => $upcoming->next_payment_attempt
         ]);
         $sub->save();
