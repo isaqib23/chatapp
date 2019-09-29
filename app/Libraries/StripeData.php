@@ -4,6 +4,7 @@ namespace App\Libraries;
 
 use App\Group;
 use App\GroupUser;
+use App\StripeAccount;
 use App\User;
 use Stripe\Stripe;
 use App\GroupSubscription;
@@ -38,7 +39,8 @@ class StripeData {
     public function create_group_subscription($data,$token){
         $str = $this->get_stripe_settings();
         $group = Group::find($data['group_id']);
-        Stripe::setApiKey('sk_test_HcWAVbzddmGh0edPiwfCqQAH00c0gPi0R1');
+        $userStripe = StripeAccount::where('user_id',$data['user_id'])->first();
+        Stripe::setApiKey($userStripe->access_token);
         //$data['token'] = $this->generete_token();
         // Get User
         $user = User::where(['id' => $data['user_id']])->first();
@@ -48,7 +50,7 @@ class StripeData {
             "source" => $token,
             "description" => $user->first_name."'s Group Join Fee",
             "email"     => $user->email
-        ],["api_key" => "sk_test_HcWAVbzddmGh0edPiwfCqQAH00c0gPi0R1"]);
+        ],["api_key" => $userStripe->access_token]);
 
         // Getting Card Info
         $card_count = count($customer['sources']['data']);
@@ -76,7 +78,7 @@ class StripeData {
             ],
             "expand" => ["latest_invoice.payment_intent"],
             "application_fee_percent" => 10,
-        ], ["stripe_account" => "acct_1FO48AKPT2oQu4r6"]);
+        ], ["stripe_account" => $userStripe->stripe_user_id]);
 
         /*$subscription = \Stripe\Subscription::create([
             'customer' => $customer['id'],

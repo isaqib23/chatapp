@@ -51,6 +51,7 @@ Route::group([
         Route::post('cancel_subscription', 'ApiController@cancel_subscription');
         Route::post('get_subscriptions', 'ApiController@get_subscriptions');
         Route::post('get_payment_history', 'ApiController@get_payment_history');
+        Route::post('check_stripe_account', 'ApiController@check_stripe_account');
 
         // Messages Routes
         Route::post('send_message', 'MessageController@create');

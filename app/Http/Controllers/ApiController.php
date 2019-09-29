@@ -175,4 +175,28 @@ class ApiController extends Controller
 
         return view('common',['common' => $data]);
     }
+
+    public function check_stripe_account(Request $request){
+        $validation = $this->validator->voucher($request->all());
+        $str = $this->stripe->get_stripe_settings();
+
+        if($validation['status']){
+            $user = StripeAccount::where('user_id',$request->input('user_id'))->first();
+            //echo "<pre>";print_r($user);exit;
+            if($user == Null) {
+                return response()->json([
+                    'status'    =>  false,
+                    'message'   => 'Stripe Account Not Created',
+                    'link'  => "https://connect.stripe.com/oauth/authorize?response_type=code&client_id=".$str['settings']->client_id."&state=".$request->input('user_id')."&scope=read_write&stripe_landing=register"
+                ], 200);
+            }else{
+                return response()->json([
+                    'status'    =>  true,
+                    'message'   => 'Stripe Account Created'
+                ], 200);
+            }
+        }else{
+            return response()->json($validation);
+        }
+    }
 }
