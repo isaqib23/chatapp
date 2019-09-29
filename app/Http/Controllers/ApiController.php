@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Group;
 use App\GroupSubscription;
+use App\User;
 use Illuminate\Http\Request;
 use App\Libraries\ApiValidations;
 use App\Libraries\StripeData;
@@ -139,5 +140,31 @@ class ApiController extends Controller
         }else{
             return response()->json($validation);
         }
+    }
+
+    public function vendor_stripe_back(Request $request){
+        $data = new \stdClass();
+        $data->header = 'Stripe Account';
+        if($request->has('code')){
+            $user_id = $request->input('state');
+
+            $code = $request->input('code');
+            $user = User::where('id',$user_id)->first();
+            //echo "<pre>";print_r($user);exit;
+            if($user->stripe_account == Null) {
+                //Create Stripe Account
+                $stripeAccount = $this->stripe->create_stripe_account($code);
+                if($stripeAccount['status']) {
+                    User::where('id', $user_id)->update(['stripe_account' => $stripeAccount['account']]);
+                    $data->message = 'Your stripe account created, now you can create groups using our mobile app. Stripe sent you an email for further process. Check your email!';
+                }else{
+                    $data->message = $stripeAccount['message'];
+                }
+            }
+        }else{
+            $data->message = 'Invalid Stripe Authorization Code';
+        }
+
+        return view('common',['common' => $data]);
     }
 }

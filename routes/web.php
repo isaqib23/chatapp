@@ -21,6 +21,7 @@ Route::get('/clear-cache', function() {
     // return what you want
 });
 
+Route::get('/stripe_account', 'ApiController@vendor_stripe_back')->name('stripe_account');
 Auth::routes(['register' => false]);
 
 Route::get('/', 'HomeController@index')->name('home');

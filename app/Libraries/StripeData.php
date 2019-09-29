@@ -141,24 +141,36 @@ class StripeData {
         }
     }
 
-    public function create_stripe_account($email){
-        $str = $this->get_stripe_settings();
-        \Stripe\Stripe::setApiKey($str['settings']->secret);
+    public function create_stripe_account($code){
+        $stripe = $this->get_stripe_settings();
 
         try {
-            $str = $this->get_stripe_settings();
-            \Stripe\Stripe::setApiKey($str['settings']->secret);
+            $client = new \GuzzleHttp\Client();
 
-            $account = \Stripe\Account::create([
-                "type" => "custom",
-                "country" => "US",
-                "email" => $email,
-                "business_type" => "individual",
-                "requested_capabilities" => ["card_payments", "transfers"],
-            ]);
-            return ['status' => true, 'account' => $account->id];
-        } catch (\Exception $e) {
+            $response = $client->post(
+                'https://connect.stripe.com/oauth/token',
+                [
+                    \GuzzleHttp\RequestOptions::JSON =>
+                        [
+                            'client_secret' => $stripe['settings']->secret,
+                            'code' => $code,
+                            'grant_type' => 'authorization_code'
+                        ]
+                ],
+                ['Content-Type' => 'application/json']
+            );
+
+            $json = json_decode($response->getBody(), true);
+
+            $account_id = $json['stripe_user_id'];
+
+            return ['status' => true, 'account' => $account_id];
+        }
+        catch (\Exception $e){
             return ['status' => false, 'message' => $e->getMessage()];
         }
     }
+
+
+
 }

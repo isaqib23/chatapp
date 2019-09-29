@@ -39,7 +39,7 @@ class GroupController extends Controller
         if($validation['status']){
             $user = User::where('id',$request->input('user_id'))->first();
             //echo "<pre>";print_r($user);exit;
-            /*if($user->stripe_account == Null) {
+            if($user->stripe_account == Null) {
                 //Create Stripe Account
                 $stripeAccount = $this->stripe->create_stripe_account($user->email);
                 if($stripeAccount['status']) {
@@ -47,7 +47,7 @@ class GroupController extends Controller
                 }else{
                     return response()->json($stripeAccount);
                 }
-            }*/
+            }
             // Upload Group Image
             define('UPLOAD_DIR', public_path().'/images/');
             $image = base64_decode($request->input('photo'));
