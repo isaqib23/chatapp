@@ -42,31 +42,36 @@ class StripeData {
         //$data['token'] = $this->generete_token();
         // Get User
         $user = User::where(['id' => $data['user_id']])->first();
+        echo "<pre>";print_r(// Fetching an account just needs the ID as a parameter
+            \Stripe\Account::retrieve("acct_1FO2UMKNtdJ5SsDE"));exit;
         //Create Customer
-        $customer = \Stripe\Customer::create([
+        $custo = \Stripe\Customer::create([
             "source" => $token,
             "description" => $user->first_name."'s Group Join Fee",
             "email"     => $user->email
         ]);
 
+        $token = \Stripe\Token::create(
+            ["customer" => $custo['id']],
+            ["stripe_account" => "acct_1FO2UMKNtdJ5SsDE"]);
+
+        $customer = \Stripe\Customer::create([
+            "source" => $token['id'],
+            "description" => $user->first_name."'s Group Join Fee",
+
+        ], ['stripe_account' => 'acct_1FO2UMKNtdJ5SsDE']);
+
+
+
         // Getting Card Info
         $card_count = count($customer['sources']['data']);
         $card = $customer['sources']['data'][$card_count-1];
-
-        // Create Charge
-        $charge = \Stripe\Charge::create([
-            'customer' => $customer['id'],
-            'currency' => $str['settings']->currency,
-            'receipt_email' => $user->email,
-            "description" => $user->first_name . "'s Group Join Fee",
-            'amount' => bcmul($group->price, 100),
-        ]);
 
         // Create Product
         $stripe_product = \Stripe\Product::create([
             'name' => $group->name,
             'type' => 'service',
-        ]);
+        ], ['stripe_account' => 'acct_1FO2UMKNtdJ5SsDE']);
 
         $plan = \Stripe\Plan::create([
             'product' => $stripe_product['id'],
@@ -74,13 +79,22 @@ class StripeData {
             'interval' => 'month',        //year
             'currency' => $str['settings']->currency,
             'amount' => bcmul($group->price, 100)
-        ]);
+        ], ['stripe_account' => 'acct_1FO2UMKNtdJ5SsDE']);
 
         $subscription = \Stripe\Subscription::create([
+            "customer" => $customer['id'],
+            "items" => [
+                ["plan" => $plan['id']],
+            ],
+            "expand" => ["latest_invoice.payment_intent"],
+            "application_fee_percent" => 10,
+        ], ["stripe_account" => "acct_1FO2UMKNtdJ5SsDE"]);
+
+        /*$subscription = \Stripe\Subscription::create([
             'customer' => $customer['id'],
             'items' => [['plan' => $plan['id']]],
             'metadata'    => array("description" => "Group Join Fee from - ".$user->first_name)
-        ]);
+        ]);*/
         $invoice = \Stripe\Invoice::all(array("customer" => $customer['id']));
         $upcoming = \Stripe\Invoice::upcoming(array("customer" => $customer['id']));
 
@@ -164,7 +178,7 @@ class StripeData {
 
             $account_id = $json['stripe_user_id'];
 
-            return ['status' => true, 'account' => $account_id];
+            return ['status' => true, 'account' => $json];
         }
         catch (\Exception $e){
             return ['status' => false, 'message' => $e->getMessage()];

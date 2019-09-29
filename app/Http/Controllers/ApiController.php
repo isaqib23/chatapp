@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Group;
 use App\GroupSubscription;
+use App\StripeAccount;
 use App\User;
 use Illuminate\Http\Request;
 use App\Libraries\ApiValidations;
@@ -149,13 +150,20 @@ class ApiController extends Controller
             $user_id = $request->input('state');
 
             $code = $request->input('code');
-            $user = User::where('id',$user_id)->first();
+            $user = StripeAccount::where('user_id',$user_id)->first();
             //echo "<pre>";print_r($user);exit;
-            if($user->stripe_account == Null) {
+            if($user == Null) {
                 //Create Stripe Account
                 $stripeAccount = $this->stripe->create_stripe_account($code);
                 if($stripeAccount['status']) {
-                    User::where('id', $user_id)->update(['stripe_account' => $stripeAccount['account']]);
+                    $stripe = new StripeAccount([
+                        'user_id' => $user_id,
+                        'stripe_publishable_key' => $stripeAccount['account']['stripe_publishable_key'],
+                        'stripe_user_id' => $stripeAccount['account']['stripe_user_id'],
+                        'refresh_token' => $stripeAccount['account']['refresh_token'],
+                        'access_token' => $stripeAccount['account']['access_token']
+                    ]);
+                    $stripe->save();
                     $data->message = 'Your stripe account created, now you can create groups using our mobile app. Stripe sent you an email for further process. Check your email!';
                 }else{
                     $data->message = $stripeAccount['message'];

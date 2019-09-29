@@ -37,17 +37,6 @@ class GroupController extends Controller
         $validation = $this->validator->group($request->all());
 
         if($validation['status']){
-            $user = User::where('id',$request->input('user_id'))->first();
-            //echo "<pre>";print_r($user);exit;
-            if($user->stripe_account == Null) {
-                //Create Stripe Account
-                $stripeAccount = $this->stripe->create_stripe_account($user->email);
-                if($stripeAccount['status']) {
-                    User::where('id', $request->input('user_id'))->update(['stripe_account' => $stripeAccount['account']]);
-                }else{
-                    return response()->json($stripeAccount);
-                }
-            }
             // Upload Group Image
             define('UPLOAD_DIR', public_path().'/images/');
             $image = base64_decode($request->input('photo'));
