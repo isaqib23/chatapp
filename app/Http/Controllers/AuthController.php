@@ -106,11 +106,11 @@ class AuthController extends Controller
         $data['error'] = false;
         if (!$user) {
             $data['error'] = true;
+        }else {
+            $user->active = true;
+            $user->activation_token = '';
+            $user->save();
         }
-        $user->active = true;
-        $user->activation_token = '';
-        $user->save();
-
         return view('auth.signup_active', $data);
     }
 
