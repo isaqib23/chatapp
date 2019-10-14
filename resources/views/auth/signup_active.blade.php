@@ -10,7 +10,7 @@
                 <img src="assets/media/image/light-logo-2.png" class="m-r-15" width="40" alt="">
                 <h3 class="m-0">Bullish ChatApp</h3>
             </div>
-            @if(!$error)
+            @if($error)
                 <p class="alert alert-warning">Your Account is already Activated. You can now use our Mobile Apps.</p>
             @else
                 <p class="alert alert-success">Your Account is successfully confirmed & activated. Now you use our Mobile Apps.</p>
