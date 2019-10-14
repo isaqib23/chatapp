@@ -103,15 +103,15 @@ class AuthController extends Controller
     public function signupActivate($token)
     {
         $user = User::where('activation_token', $token)->first();
+        $data['error'] = false;
         if (!$user) {
-            return response()->json([
-                'message' => 'This activation token is invalid.'
-            ], 404);
+            $data['error'] = true;
         }
         $user->active = true;
         $user->activation_token = '';
         $user->save();
-        return $user;
+
+        return view('auth.signup_active', $data);
     }
 
     public function update(Request $request)
