@@ -174,11 +174,11 @@ class MessageController extends Controller
     }
 
     public function save_image($data){
-        define('UPLOAD_DIR', public_path().'/images/');
-        $image = base64_decode($data);
-        $file = UPLOAD_DIR . md5(date('Y-m-d H:i:s')).'.jpg';
-        file_put_contents($file, $image);
+        $image = $data;
+        $name = time().'.'.$image->getClientOriginalExtension();
+        $folder = public_path('/images/');
+        $image->move($folder, $name);
 
-        return str_replace(public_path().'/images/', '', $file);
+        return $name;
     }
 }
