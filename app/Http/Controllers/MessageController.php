@@ -49,7 +49,7 @@ class MessageController extends Controller
             }
             // Upload Group Image
             if($request->input('text_type') == 'image'){
-                $msg = $this->save_image($request->input('image'));
+                $msg = $this->save_image($request->file('image'));
             }else{
                 $msg = $request->input('message');
             }
