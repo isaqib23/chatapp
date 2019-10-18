@@ -80,10 +80,18 @@ class MessageController extends Controller
 
         if($validation['status']){
             $user_id = $request->input('user_id');
-            $results = \DB::select("select DISTINCT `receiver_id`  from `messages` where (`user_id` = $user_id  and `type` = 'single') or (`receiver_id` = $user_id and `type` = 'single') order by `id` DESC");
+            $results = \DB::select("
+            select  distinct user_id
+            from    messages
+            where   receiver_id = $user_id
+            union
+            select  distinct receiver_id
+            from    messages
+            where   user_id = $user_id
+            ");
             $receivers = [];
             foreach ($results as $key => $value){
-                array_push($receivers,$value->receiver_id);
+                array_push($receivers,$value->user_id);
             }
             $response = $messages->with(['user','receiver'])
                 ->whereIn('receiver_id',$receivers)
@@ -103,15 +111,37 @@ class MessageController extends Controller
 
     public function get_single_conversation(Request $request){
         $messages = new Message();
+        $user = new User();
         $validation = $this->validator->single_conversation($request->all());
 
         if($validation['status']){
             // Update Seen Status
             $messages->where(['user_id' => $request->input('user_id'), 'receiver_id' => $request->input('receiver_id')])->update(['status' => 'seen']);
+            $user_id = $request->input('user_id');
+            $receiver_id = $request->input('receiver_id');
 
-            $response = $messages->with(['user','receiver'])
-                ->where(['user_id' => $request->input('user_id'), 'receiver_id' => $request->input('receiver_id')])
-                ->orderBy('id','desc')->get();
+            $response = \DB::select("select id,user_id,receiver_id,message,text_type,type,status,created_at from `messages` where (
+                `user_id` = $receiver_id and 
+                `receiver_id` = $user_id
+                 ) or (
+                 `user_id` = $user_id and
+                  `receiver_id` = $receiver_id
+                  ) order by `id` DESC");
+
+            if(count($response) > 0){
+                foreach ($response as $key=>$value){
+                    $sender = $user->where('id',$value->user_id)->first();
+                    $receiver = $user->where('id',$value->receiver_id)->first();
+
+                    $response[$key]->user_name = $sender->first_name.' '.$sender->last_name;
+                    $response[$key]->user_email = $sender->email;
+                    $response[$key]->user_photo = $sender->photo;
+
+                    $response[$key]->receiver_name = $receiver->first_name.' '.$receiver->last_name;
+                    $response[$key]->receiver_email = $receiver->email;
+                    $response[$key]->receiver_photo = $receiver->photo;
+                }
+            }
             return response()->json([
                 'status'    =>  true,
                 'message'   => 'Messages List Fetched Successfully!',

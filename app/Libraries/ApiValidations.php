@@ -267,7 +267,7 @@ class ApiValidations {
     public function send_message($data){
         $validator = Validator::make($data,[
             'user_id' => 'required|string',
-            'message' => 'required|string',
+            'message' => 'required',
             'type' => 'required|string',
             'text_type' => 'required|string'
         ]);
