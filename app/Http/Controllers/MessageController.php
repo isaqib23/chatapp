@@ -132,7 +132,7 @@ class MessageController extends Controller
 
             $response = $messages->with(['user','group'])
                 ->where(['user_id' => $request->input('user_id'), 'group_id' => $request->input('group_id')])
-                ->orderBy('id','desc')->paginate(2,['*'],'page',$request->input('page'));
+                ->orderBy('id','desc')->get();
             return response()->json([
                 'status'    =>  true,
                 'message'   => 'Messages List Fetched Successfully!',
