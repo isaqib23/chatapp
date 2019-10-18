@@ -285,7 +285,7 @@ class ApiValidations {
         $validator = Validator::make($data,[
             'user_id' => 'required|string',
             'receiver_id' => 'required|string',
-            'page' => 'required|string'
+            //'page' => 'required|string'
         ]);
 
 
@@ -301,7 +301,7 @@ class ApiValidations {
         $validator = Validator::make($data,[
             'user_id' => 'required|string',
             'group_id' => 'required|string',
-            'page' => 'required|string'
+            //'page' => 'required|string'
         ]);
 
 
