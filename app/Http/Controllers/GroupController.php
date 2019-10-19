@@ -9,7 +9,7 @@ use App\Group;
 use App\GroupUser;
 use App\Category;
 use Illuminate\Http\Request;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class GroupController extends Controller
 {
@@ -18,7 +18,6 @@ class GroupController extends Controller
 
     public function __construct()
     {
-        DB::enableQueryLog();
         $this->middleware('auth');
 
         $this->validator = new ApiValidations();
@@ -104,17 +103,10 @@ class GroupController extends Controller
                     'group_id'      => $request->input('group_id'),
                     'user_id'       => $request->input('user_id'),
                     'status'        => 'join',
-                    'role' => 'no'
+                    'can_send_text' => ($get_group->type == 'open') ? 'yes' : 'no'
                 ]);
-
-
                 $group_user->save();
 
-                $query = DB::getQueryLog();
-
-
-
-                echo "<pre>";print_r($query);exit;
                 return response()->json([
                     'status' => true,
                     'message' => 'Thanks! you have successfully Join Group.',
