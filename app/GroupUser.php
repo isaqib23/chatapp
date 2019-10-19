@@ -9,7 +9,7 @@ class GroupUser extends Model
     protected $table = 'group_users';
 
     protected $fillable = [
-        'group_id', 'user_id', 'status'
+        'group_id', 'user_id', 'status', 'can_send_text'
     ];
 
     public function user(){
