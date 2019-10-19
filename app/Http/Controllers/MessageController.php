@@ -66,7 +66,8 @@ class MessageController extends Controller
             $message->save();
             return response()->json([
                 'status'    =>  true,
-                'message'   => 'Message Sent Successfully!'
+                'message'   => 'Message Sent Successfully!',
+                'response'  => $message
             ], 200);
         }else{
             return response()->json($validation);
