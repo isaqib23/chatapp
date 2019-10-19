@@ -98,6 +98,7 @@ class GroupController extends Controller
             $response = $this->stripe->create_group_subscription($request->all(),$token['token']);
             if($response['status']) {
                 $get_group = $group->where(['id' => $request->input('group_id')])->first();
+                echo "<pre>";print_r($get_group);exit;
                 $group_user = new GroupUser([
                     'group_id' => $request->input('group_id'),
                     'user_id' => $request->input('user_id'),
@@ -105,7 +106,7 @@ class GroupController extends Controller
                     'can_send_text' => ($get_group->type == 'open') ? 'yes' : 'no'
                 ]);
                 $group_user->save();
-                //$user->notify(new SignupActivate($user));
+
                 return response()->json([
                     'status' => true,
                     'message' => 'Thanks! you have successfully Join Group.',
