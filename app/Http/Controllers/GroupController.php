@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Libraries\ApiValidations;
 use App\Libraries\StripeData;
+use App\StripeAccount;
 use App\User;
 use App\Group;
 use App\GroupUser;
@@ -70,9 +71,28 @@ class GroupController extends Controller
     {
         $group = new Group();
         $user_group = new GroupUser();
+        $user = new User();
         $validation = $this->validator->join_group($request->all());
 
         if($validation['status']){
+            //Check is Group Owner Stripe
+            $stripe = $user = StripeAccount::where('user_id',$request->input('user_id'))->first();
+            if($stripe === Null){
+                return response()->json([
+                    'status'    =>  false,
+                    'message'   => "You don't have a stripe merchant account. you need to create account",
+                ], 200);
+            }
+
+            //Check is Admin
+            $check = $user->where(['id' => $request->input('user_id'), 'type' => 'admin'])->first();
+            if($check){
+                return response()->json([
+                    'status'    =>  false,
+                    'message'   => 'Invalid user',
+                ], 200);
+            }
+
             //Check is Group Owner
             $check = $group->where(['user_id' => $request->input('user_id'), 'id' => $request->input('group_id')])->first();
             if($check){
