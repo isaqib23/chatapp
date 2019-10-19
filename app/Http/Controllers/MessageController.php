@@ -127,7 +127,7 @@ class MessageController extends Controller
                  ) or (
                  `user_id` = $user_id and
                   `receiver_id` = $receiver_id
-                  ) order by `id` DESC");
+                  ) order by `id` ASC");
 
             if(count($response) > 0){
                 foreach ($response as $key=>$value){
