@@ -108,7 +108,7 @@ class GroupController extends Controller
                 $group_user->save();
 
                 \DB::enableQueryLog();
-                echo "<pre>";print_r(DB::getQueryLog());exit;
+                echo "<pre>";print_r(\DB::getQueryLog());exit;
                 return response()->json([
                     'status' => true,
                     'message' => 'Thanks! you have successfully Join Group.',
