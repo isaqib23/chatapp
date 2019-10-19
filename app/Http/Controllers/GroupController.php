@@ -102,14 +102,14 @@ class GroupController extends Controller
                 $group_user = new GroupUser([
                     'group_id'      => $request->input('group_id'),
                     'user_id'       => $request->input('user_id'),
-                    'status'        => 'leave',
-                    'can_send_text' => ($get_group->type == 'open') ? 'yes' : 'no'
+                    'status'        => 'join',
+                    'can_send_text' => 'no'
                 ]);
 
 
                 $group_user->save();
 
-                
+
                 return response()->json([
                     'status' => true,
                     'message' => 'Thanks! you have successfully Join Group.',
