@@ -39,7 +39,7 @@ class MessageController extends Controller
                         'status' => false,
                         'message' => 'You are not member of this group.',
                     ], 200);
-                }else {
+                }elseif ($check->can_send_text == 'no') { {
                     return response()->json([
                         'status' => false,
                         'message' => 'You cannot send message to this group.',
