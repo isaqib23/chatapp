@@ -70,6 +70,8 @@ class MessageController extends Controller
                 $receiver = $user->where('id', $message->receiver_id)->first();
                 $message->user_name = $sender->first_name . ' ' . $sender->last_name;
                 $message->user_email = $sender->email;
+                $message->user_id = $sender->id;
+                $message->receiver_id = $receiver->id;
                 $message->user_photo = $sender->photo;
                 $message->receiver_name = $receiver->first_name . ' ' . $receiver->last_name;
                 $message->receiver_email = $receiver->email;
