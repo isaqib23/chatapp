@@ -174,9 +174,18 @@ class MessageController extends Controller
 
     public function get_group_conversation(Request $request){
         $messages = new Message();
+        $user_group = new GroupUser();
         $validation = $this->validator->group_conversation($request->all());
 
         if($validation['status']){
+            $check = $user_group->where(['user_id' => $request->input('user_id'), 'group_id' => $request->input('group_id')])->first();
+            if($check === Null){
+                return response()->json([
+                    'status' => false,
+                    'message' => 'You are not member of this group.',
+                ], 200);
+            }
+
             // Update Seen Status
             $messages->where(['user_id' => $request->input('user_id'), 'group_id' => $request->input('group_id')])->update(['status' => 'seen']);
 
