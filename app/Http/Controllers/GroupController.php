@@ -9,6 +9,7 @@ use App\Group;
 use App\GroupUser;
 use App\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class GroupController extends Controller
 {
@@ -99,13 +100,15 @@ class GroupController extends Controller
             if($response['status']) {
                 $get_group = $group->where(['id' => $request->input('group_id')])->first();
                 $group_user = new GroupUser([
-                    'group_id' => $request->input('group_id'),
-                    'user_id' => $request->input('user_id'),
-                    'status' => 'join',
+                    'group_id'      => $request->input('group_id'),
+                    'user_id'       => $request->input('user_id'),
+                    'status'        => 'join',
                     'can_send_text' => ($get_group->type == 'open') ? 'yes' : 'no'
                 ]);
                 $group_user->save();
 
+                \DB::enableQueryLog();
+                echo "<pre>";print_r(DB::getQueryLog());exit;
                 return response()->json([
                     'status' => true,
                     'message' => 'Thanks! you have successfully Join Group.',
