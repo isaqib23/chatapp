@@ -181,7 +181,7 @@ class MessageController extends Controller
             $messages->where(['user_id' => $request->input('user_id'), 'group_id' => $request->input('group_id')])->update(['status' => 'seen']);
 
             $response = $messages->with(['user','group'])
-                ->where(['user_id' => $request->input('user_id'), 'group_id' => $request->input('group_id')])
+                ->where(['group_id' => $request->input('group_id')])
                 ->orderBy('id','desc')->get();
             return response()->json([
                 'status'    =>  true,
