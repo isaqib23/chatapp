@@ -75,8 +75,9 @@ class GroupController extends Controller
         $validation = $this->validator->join_group($request->all());
 
         if($validation['status']){
+            $get_group = $group->where(['id' => $request->input('group_id')])->first();
             //Check is Group Owner Stripe
-            $stripe = $user = StripeAccount::where('user_id',$request->input('user_id'))->first();
+            $stripe = $user = StripeAccount::where('user_id',$get_group->user_id)->first();
             if($stripe === Null){
                 return response()->json([
                     'status'    =>  false,
@@ -118,7 +119,6 @@ class GroupController extends Controller
 
             $response = $this->stripe->create_group_subscription($request->all(),$token['token']);
             if($response['status']) {
-                $get_group = $group->where(['id' => $request->input('group_id')])->first();
                 $group_user = new GroupUser([
                     'group_id'      => $request->input('group_id'),
                     'user_id'       => $request->input('user_id'),
