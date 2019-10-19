@@ -39,7 +39,7 @@ class StripeData {
     public function create_group_subscription($data,$token){
         $str = $this->get_stripe_settings();
         $group = Group::find($data['group_id']);
-        $userStripe = StripeAccount::where('user_id',$data['user_id'])->first();
+        $userStripe = StripeAccount::where('user_id',$group->user_id)->first();
         Stripe::setApiKey($userStripe->access_token);
         //$data['token'] = $this->generete_token();
         // Get User
