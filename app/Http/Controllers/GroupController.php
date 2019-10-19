@@ -77,7 +77,7 @@ class GroupController extends Controller
         if($validation['status']){
             $get_group = $group->where(['id' => $request->input('group_id')])->first();
             //Check is Group Owner Stripe
-            $stripe = $user = StripeAccount::where('user_id',$get_group->user_id)->first();
+            $stripe = StripeAccount::where('user_id',$get_group->user_id)->first();
             if($stripe === Null){
                 return response()->json([
                     'status'    =>  false,
