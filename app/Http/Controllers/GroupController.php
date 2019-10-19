@@ -98,6 +98,7 @@ class GroupController extends Controller
             $response = $this->stripe->create_group_subscription($request->all(),$token['token']);
             if($response['status']) {
                 $get_group = $group->where(['id' => $request->input('group_id')])->first();
+                echo ($get_group->type == 'open') ? 'yes' : 'no';
                 echo "<pre>";print_r($get_group);exit;
                 $group_user = new GroupUser([
                     'group_id' => $request->input('group_id'),
