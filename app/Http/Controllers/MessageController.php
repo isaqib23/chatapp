@@ -33,7 +33,7 @@ class MessageController extends Controller
                     ], 200);
                 }
                 //Check is Group Owner
-                $check = $user_group->where(['user_id' => $request->input('user_id'), 'id' => $request->input('group_id')])->first();
+                $check = $user_group->where(['user_id' => $request->input('user_id'), 'group_id' => $request->input('group_id')])->first();
                 if ($check->can_send_text == 'no') {
                     return response()->json([
                         'status' => false,
