@@ -21,6 +21,7 @@ class MessageController extends Controller
     public function create(Request $request){
         $group = new Group();
         $user_group = new GroupUser();
+        $user = new User();
         $validation = $this->validator->send_message($request->all());
 //echo "<pre>";print_r($request->all());exit;
         if($validation['status']){
@@ -64,6 +65,17 @@ class MessageController extends Controller
                 'message' => $msg
             ]);
             $message->save();
+            if($request->input('type') != 'group') {
+                $sender = $user->where('id', $message->user_id)->first();
+                $receiver = $user->where('id', $message->receiver_id)->first();
+                $message->user_name = $sender->first_name . ' ' . $sender->last_name;
+                $message->user_email = $sender->email;
+                $message->user_photo = $sender->photo;
+                $message->receiver_name = $receiver->first_name . ' ' . $receiver->last_name;
+                $message->receiver_email = $receiver->email;
+                $message->receiver_photo = $receiver->photo;
+                unset($message->updated_at,$message->group_id);
+            }
             return response()->json([
                 'status'    =>  true,
                 'message'   => 'Message Sent Successfully!',
