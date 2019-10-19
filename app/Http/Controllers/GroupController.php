@@ -103,7 +103,7 @@ class GroupController extends Controller
                     'group_id'      => $request->input('group_id'),
                     'user_id'       => $request->input('user_id'),
                     'status'        => 'join',
-                    'can_send_text' => 'yes'
+                    'canSendText' => 'yes'
                 ]);
 
 
