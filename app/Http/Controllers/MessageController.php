@@ -82,6 +82,18 @@ class MessageController extends Controller
                 $message->receiver_email = $receiver->email;
                 $message->receiver_photo = $receiver->photo;
                 unset($message->updated_at,$message->group_id);
+            }else{
+                $sender = $user->where('id',$message->user_id)->first();
+                $gro = $group->where('id',$message->group_id)->first();
+
+                $message->user_name = $sender->first_name.' '.$sender->last_name;
+                $message->user_email = $sender->email;
+                $message->user_photo = $sender->photo;
+
+                $message->group_name = $gro->name;
+                $message->group_price = $gro->price;
+                $message->group_photo = $gro->photo;
+                unset($message->receiver_id, $message->updated_at);
             }
             return response()->json([
                 'status'    =>  true,
@@ -175,6 +187,8 @@ class MessageController extends Controller
     public function get_group_conversation(Request $request){
         $messages = new Message();
         $user_group = new GroupUser();
+        $group = new Group();
+        $user = new User();
         $validation = $this->validator->group_conversation($request->all());
 
         if($validation['status']){
@@ -189,9 +203,25 @@ class MessageController extends Controller
             // Update Seen Status
             $messages->where(['user_id' => $request->input('user_id'), 'group_id' => $request->input('group_id')])->update(['status' => 'seen']);
 
-            $response = $messages->with(['user','group'])
+            $response = $messages
                 ->where(['group_id' => $request->input('group_id')])
                 ->orderBy('id','desc')->get();
+
+            if($response != Null){
+                foreach ($response as $key=>$value){
+                    $sender = $user->where('id',$value->user_id)->first();
+                    $gro = $group->where('id',$value->group_id)->first();
+
+                    $response[$key]->user_name = $sender->first_name.' '.$sender->last_name;
+                    $response[$key]->user_email = $sender->email;
+                    $response[$key]->user_photo = $sender->photo;
+
+                    $response[$key]->group_name = $gro->name;
+                    $response[$key]->group_price = $gro->price;
+                    $response[$key]->group_photo = $gro->photo;
+                    unset($response[$key]->receiver_id, $response[$key]->updated_at);
+                }
+            }
             return response()->json([
                 'status'    =>  true,
                 'message'   => 'Messages List Fetched Successfully!',
