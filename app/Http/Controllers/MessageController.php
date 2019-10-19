@@ -34,7 +34,12 @@ class MessageController extends Controller
                 }
                 //Check is Group Owner
                 $check = $user_group->where(['user_id' => $request->input('user_id'), 'group_id' => $request->input('group_id')])->first();
-                if ($check->can_send_text == 'no') {
+                if($check === Null){
+                    return response()->json([
+                        'status' => false,
+                        'message' => 'You are not member of this group.',
+                    ], 200);
+                }else {
                     return response()->json([
                         'status' => false,
                         'message' => 'You cannot send message to this group.',
