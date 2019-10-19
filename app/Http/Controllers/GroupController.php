@@ -105,9 +105,14 @@ class GroupController extends Controller
                     'status'        => 'join',
                     'can_send_text' => ($get_group->type == 'open') ? 'yes' : 'no'
                 ]);
+                echo "<pre>";print_r([
+                    'group_id'      => $request->input('group_id'),
+                    'user_id'       => $request->input('user_id'),
+                    'status'        => 'join',
+                    'can_send_text' => ($get_group->type == 'open') ? 'yes' : 'no'
+                ]);exit;
                 $group_user->save();
 
-                \DB::enableQueryLog();
                 echo "<pre>";print_r(\DB::getQueryLog());exit;
                 return response()->json([
                     'status' => true,
