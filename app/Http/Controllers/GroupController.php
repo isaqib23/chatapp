@@ -162,9 +162,9 @@ class GroupController extends Controller
             $joined_groups = $group->with(['user','category'])->whereIn('id',$user_group->pluck('group_id'))->get();
 
             $joined_mapped = $joined_groups->map(function ($item, $key) use($user_group) {
-                $count = $user_group->where(['group_id' => $item->id, 'status' => 'join'])->count();
+                $count = \DB::table('group_users')->where(['group_id' => $item->id, 'status' => 'join'])->count();
                 $item['members_count'] = $count;
-                echo $item->id;exit;
+                echo $count;exit;
                 $item['isJoined'] = 'yes';
                 return $item;
             });
