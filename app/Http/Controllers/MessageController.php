@@ -39,7 +39,7 @@ class MessageController extends Controller
                         'status' => false,
                         'message' => 'You are not member of this group.',
                     ], 200);
-                }elseif ($check->can_send_text == 'no') { 
+                }elseif ($check->can_send_text == 'no') {
                     return response()->json([
                         'status' => false,
                         'message' => 'You cannot send message to this group.',
@@ -205,7 +205,7 @@ class MessageController extends Controller
 
             $response = $messages
                 ->where(['group_id' => $request->input('group_id')])
-                ->orderBy('id','desc')->get();
+                ->orderBy('id','asc')->get();
 
             if($response != Null){
                 foreach ($response as $key=>$value){
