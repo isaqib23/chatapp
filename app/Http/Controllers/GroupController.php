@@ -151,8 +151,7 @@ class GroupController extends Controller
         if($validation['status']){
             $results = $group->with(['user','category'])->where(['user_id' => $request->input('user_id')])->get();
             $results_mapped = $results->map(function ($item, $key) use($user_group) {
-                $count = $user_group->where(['group_id' => $item->id, 'status' => 'join'])->count();
-                echo $count;exit;
+                $count = \DB::table('group_users')->where(['group_id' => $item->id, 'status' => 'join'])->count();
                 $item['members_count'] = $count;
                 $item['isJoined'] = 'no';
                 return $item;
@@ -164,7 +163,6 @@ class GroupController extends Controller
             $joined_mapped = $joined_groups->map(function ($item, $key) use($user_group) {
                 $count = \DB::table('group_users')->where(['group_id' => $item->id, 'status' => 'join'])->count();
                 $item['members_count'] = $count;
-                echo $count;exit;
                 $item['isJoined'] = 'yes';
                 return $item;
             });
