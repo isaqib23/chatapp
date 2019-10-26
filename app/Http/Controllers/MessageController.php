@@ -111,6 +111,7 @@ class MessageController extends Controller
     public function get_messages(Request $request){
         $messages = new Message();
         $group_users = new GroupUser();
+        $user = new User();
         $validation = $this->validator->voucher($request->all());
 
         if($validation['status']){
@@ -137,7 +138,20 @@ class MessageController extends Controller
                  `user_id` = $user_id and
                   `receiver_id` IN ($arr)
                   ) order by `id` ASC");
+            if(count($response) > 0){
+                foreach ($response as $key=>$value){
+                    $sender = $user->where('id',$value->user_id)->first();
+                    $receiver = $user->where('id',$value->receiver_id)->first();
 
+                    $response[$key]->user_name = $sender->first_name.' '.$sender->last_name;
+                    $response[$key]->user_email = $sender->email;
+                    $response[$key]->user_photo = $sender->photo;
+
+                    $response[$key]->receiver_name = $receiver->first_name.' '.$receiver->last_name;
+                    $response[$key]->receiver_email = $receiver->email;
+                    $response[$key]->receiver_photo = $receiver->photo;
+                }
+            }
             //echo "<pre>";print_r($receivers);exit;
             return response()->json([
                 'status'    =>  true,
