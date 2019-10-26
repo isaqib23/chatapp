@@ -116,45 +116,20 @@ class MessageController extends Controller
 
         if($validation['status']){
             $user_id = $request->input('user_id');
-            $results = \DB::select("
-            select  distinct user_id
-            from    messages
-            where   receiver_id = $user_id
-            union
-            select  distinct receiver_id
-            from    messages
-            where   user_id = $user_id
-            ");
-            $receivers = [];
-            foreach ($results as $key => $value){
-                array_push($receivers,$value->user_id);
-            }
-            if(count($receivers) > 0) {
-                $arr = implode(", ", $receivers);
-                $response = \DB::select("select id,user_id,receiver_id,message,text_type,room_id,type,status,created_at from `messages` where (
-                `user_id` IN ($arr) and 
-                `receiver_id` = $user_id
-                 ) or (
-                 `user_id` = $user_id and
-                  `receiver_id` IN ($arr)
-                  ) order by `id` ASC");
-            }else{
-                $response = [];
-            }
-            if(count($response) > 0){
-                foreach ($response as $key=>$value){
-                    $sender = $user->where('id',$value->user_id)->first();
-                    $receiver = $user->where('id',$value->receiver_id)->first();
-
-                    $response[$key]->user_name = $sender->first_name.' '.$sender->last_name;
-                    $response[$key]->user_email = $sender->email;
-                    $response[$key]->user_photo = $sender->photo;
-
-                    $response[$key]->receiver_name = $receiver->first_name.' '.$receiver->last_name;
-                    $response[$key]->receiver_email = $receiver->email;
-                    $response[$key]->receiver_photo = $receiver->photo;
+            $results = $messages->select('id','user_id','receiver_id','room_id')
+                        ->where('user_id',$user_id)
+                        ->orWhere('receiver_id',$user_id)
+                        ->whereNotNull('room_id')
+                        ->groupby('room_id')->get();
+            $response = [];
+            if($results != Null){
+                foreach($results as $key => $value){
+                    if($value->room_id != Null){
+                        $response[] = $messages->where('room_id',$value->room_id)->with(['user','receiver'])->orderby('id','desc')->first();
+                    }
                 }
             }
+
             //echo "<pre>";print_r($receivers);exit;
             return response()->json([
                 'status'    =>  true,
@@ -217,12 +192,15 @@ class MessageController extends Controller
         $validation = $this->validator->group_conversation($request->all());
 
         if($validation['status']){
-            $check = $user_group->where(['user_id' => $request->input('user_id'), 'group_id' => $request->input('group_id')])->first();
-            if($check === Null){
-                return response()->json([
-                    'status' => false,
-                    'message' => 'You are not member of this group.',
-                ], 200);
+            $check_owner = $group->where('user_id',$request->input('user_id'))->first();
+            if($check_owner === Null) {
+                $check = $user_group->where(['user_id' => $request->input('user_id'), 'group_id' => $request->input('group_id')])->first();
+                if ($check === Null) {
+                    return response()->json([
+                        'status' => false,
+                        'message' => 'You are not member of this group.',
+                    ], 200);
+                }
             }
 
             // Update Seen Status
