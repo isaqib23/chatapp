@@ -129,15 +129,18 @@ class MessageController extends Controller
             foreach ($results as $key => $value){
                 array_push($receivers,$value->user_id);
             }
-            $arr = implode (", ", $receivers);
-
-            $response = \DB::select("select id,user_id,receiver_id,message,text_type,room_id,type,status,created_at from `messages` where (
+            if(count($receivers) > 0) {
+                $arr = implode(", ", $receivers);
+                $response = \DB::select("select id,user_id,receiver_id,message,text_type,room_id,type,status,created_at from `messages` where (
                 `user_id` IN ($arr) and 
                 `receiver_id` = $user_id
                  ) or (
                  `user_id` = $user_id and
                   `receiver_id` IN ($arr)
                   ) order by `id` ASC");
+            }else{
+                $response = [];
+            }
             if(count($response) > 0){
                 foreach ($response as $key=>$value){
                     $sender = $user->where('id',$value->user_id)->first();
