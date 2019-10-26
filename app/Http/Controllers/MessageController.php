@@ -52,6 +52,8 @@ class MessageController extends Controller
                         'message' => 'Please enter Receiver ID',
                     ], 200);
                 }
+
+                $room_id = $this->generate_room($request->input('user_id'),$request->input('receiver_id'));
             }
             // Upload Group Image
             if($request->input('text_type') != 'text'){
@@ -64,6 +66,7 @@ class MessageController extends Controller
                 'user_id' => $request->input('user_id'),
                 'receiver_id' => ($request->input('type') == 'group') ? Null : $request->input('receiver_id'),
                 'group_id' => ($request->input('type') == 'group') ? $request->input('group_id') : Null,
+                'room_id' => ($request->input('type') == 'group') ? Null : $room_id,
                 'type' => $request->input('type'),
                 'text_type' => $request->input('text_type'),
                 'status' => 'unseen',
@@ -125,16 +128,21 @@ class MessageController extends Controller
             foreach ($results as $key => $value){
                 array_push($receivers,$value->user_id);
             }
-            $response = $messages->with(['user','receiver'])
-                ->whereIn('receiver_id',$receivers)
-                ->orderBy('id','desc')
-                ->get()->unique('receiver_id');
+            $arr = implode (", ", $receivers);
+
+            $response = \DB::select("select id,user_id,receiver_id,message,text_type,room_id,type,status,created_at from `messages` where (
+                `user_id` IN ($arr) and 
+                `receiver_id` = $user_id
+                 ) or (
+                 `user_id` = $user_id and
+                  `receiver_id` IN ($arr)
+                  ) order by `id` ASC");
 
             //echo "<pre>";print_r($receivers);exit;
             return response()->json([
                 'status'    =>  true,
                 'message'   => 'Messages List Fetched Successfully!',
-                'response'  => $response->values()->all()
+                'response'  => $response
             ], 200);
         }else{
             return response()->json($validation);
@@ -152,7 +160,7 @@ class MessageController extends Controller
             $user_id = $request->input('user_id');
             $receiver_id = $request->input('receiver_id');
 
-            $response = \DB::select("select id,user_id,receiver_id,message,text_type,type,status,created_at from `messages` where (
+            $response = \DB::select("select id,user_id,receiver_id,message,text_type,room_id,type,status,created_at from `messages` where (
                 `user_id` = $receiver_id and 
                 `receiver_id` = $user_id
                  ) or (
@@ -239,5 +247,31 @@ class MessageController extends Controller
         $image->move($folder, $name);
 
         return $name;
+    }
+
+    public function generate_room($sender,$receiver){
+        $msg = new Message();
+        $type1 = $msg->where(['user_id' => $sender, 'receiver_id' => $receiver])->first();
+        $type2 = $msg->where(['user_id' => $receiver, 'receiver_id' => $sender])->first();
+        if($type1 === Null && $type2 === Null){
+            return $this->generateRandomString(6);
+        }
+        if($type1 === Null){
+            return $type2->room_id;
+        }
+
+        if($type2 === Null){
+            return $type1->room_id;
+        }
+    }
+
+    public function generateRandomString($length) {
+        $characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $charactersLength = strlen($characters);
+        $randomString = '';
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[rand(0, $charactersLength - 1)];
+        }
+        return $randomString;
     }
 }
