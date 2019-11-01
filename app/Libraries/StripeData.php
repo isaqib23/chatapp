@@ -1,6 +1,6 @@
 <?php
 namespace App\vendor\stripe\stripe_php\init;
-namespace App\Libraries;
+
 
 use App\Group;
 use App\GroupUser;
