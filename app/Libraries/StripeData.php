@@ -8,6 +8,7 @@ use App\StripeAccount;
 use App\User;
 use Stripe\Stripe;
 use App\GroupSubscription;
+use Edujugon\PushNotification\PushNotification;
 
 class StripeData {
 
