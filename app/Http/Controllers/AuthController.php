@@ -39,7 +39,7 @@ class AuthController extends Controller
                 'phone' => $request->input('phone'),
                 'address' => $request->input('address'),
                 'photo' => $data['picture'],
-                'device_token' => $request->input('device_token'),
+                'device_token' => $request->input('device_id'),
                 'device_type' => (strtoupper($request->input('device_type')) == 'IOS') ? 'IOS' : 'ANDROID',
                 'activation_token' => str_random(60)
             ]);
@@ -70,7 +70,7 @@ class AuthController extends Controller
             //Update Device Info
             $users = new User();
             $users = $users->find($user->id);
-            $users->device_token = $request->input('device_token');
+            $users->device_token = $request->input('device_id');
             $users->device_type = (strtoupper($request->input('device_type')) == 'IOS') ? 'IOS' : 'ANDROID';
             $users->save();
 
