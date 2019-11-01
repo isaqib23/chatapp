@@ -150,7 +150,7 @@ class GroupController extends Controller
         $validation = $this->validator->get_owner_groups($request->all());
 
         $get_user = $user->where('id',$request->input('user_id'))->first();
-        
+
         $this->stripe->send_notification('fcm',$get_user,'Test push notification');
 
         if($validation['status']){
