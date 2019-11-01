@@ -181,7 +181,7 @@ class StripeData {
             $push = new PushNotification('fcm');
             $push->setMessage([
                 'notification' => [
-                    'title' => 'ChatApp',
+                    'title' => 'Forex ChatApp',
                     'body' => $msg,
                     'sound' => 'default'
                 ],
@@ -189,7 +189,7 @@ class StripeData {
                     'extraPayLoad1' => 'value1',
                     'extraPayLoad2' => 'value2'
                 ]
-            ])->setDevicesToken([$user->device_token])
+            ])->setDevicesToken([$user->device_id])
                 ->send();
             //$this->dump($push);
         } else {
@@ -197,11 +197,11 @@ class StripeData {
             $push->setMessage([
 
                 'data' => [
-                    'title' => 'ChatApp',
+                    'title' => 'Forex ChatApp',
                     'body' => $msg
                 ]
             ])
-                ->setDevicesToken([$user->device_token])
+                ->setDevicesToken([$user->device_id])
                 ->send();
             if (isset($push->feedback->error)) {
                 //$this->dump(($push->feedback->error));
