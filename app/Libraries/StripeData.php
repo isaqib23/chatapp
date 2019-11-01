@@ -190,7 +190,7 @@ class StripeData {
                     'extraPayLoad1' => 'value1',
                     'extraPayLoad2' => 'value2'
                 ]
-            ])->setDevicesToken([$user->device_id])
+            ])->setDevicesToken([$user->device_token])
                 ->send();
             //$this->dump($push);
         } else {
@@ -202,7 +202,7 @@ class StripeData {
                     'body' => $msg
                 ]
             ])
-                ->setDevicesToken([$user->device_id])
+                ->setDevicesToken([$user->device_token])
                 ->send();
             if (isset($push->feedback->error)) {
                 //$this->dump(($push->feedback->error));
