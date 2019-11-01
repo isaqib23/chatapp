@@ -205,9 +205,9 @@ class StripeData {
                 ->setDevicesToken([$user->device_token])
                 ->send();
             if (isset($push->feedback->error)) {
-                $this->dump(($push->feedback->error));
+                echo "<pre>";print_r($push->feedback->error);exit;
             }
-            //$this->dump($push);
+            echo "<pre>";print_r($push);exit;
 
         }
     }
