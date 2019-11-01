@@ -39,6 +39,8 @@ class AuthController extends Controller
                 'phone' => $request->input('phone'),
                 'address' => $request->input('address'),
                 'photo' => $data['picture'],
+                'device_token' => $request->input('device_token'),
+                'device_type' => (strtoupper($request->input('device_type')) == 'IOS') ? 'IOS' : 'ANDROID',
                 'activation_token' => str_random(60)
             ]);
             $user->save();
@@ -65,6 +67,13 @@ class AuthController extends Controller
                     'message' => 'Invalid Credentials'
                 ], 200);
             $user = $request->user();
+            //Update Device Info
+            $users = new User();
+            $users = $users->find($user->id);
+            $users->device_token = $request->input('device_token');
+            $users->device_type = (strtoupper($request->input('device_type')) == 'IOS') ? 'IOS' : 'ANDROID';
+            $users->save();
+
             $tokenResult = $user->createToken('Personal Access Token');
             $token = $tokenResult->token;
             if ($request->remember_me)

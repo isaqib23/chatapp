@@ -175,6 +175,40 @@ class StripeData {
         }
     }
 
+    public function send_notification($type,$user,$msg)
+    {
+        if ($type == 'apn') {
+            $push = new PushNotification('fcm');
+            $push->setMessage([
+                'notification' => [
+                    'title' => 'ChatApp',
+                    'body' => $msg,
+                    'sound' => 'default'
+                ],
+                'data' => [
+                    'extraPayLoad1' => 'value1',
+                    'extraPayLoad2' => 'value2'
+                ]
+            ])->setDevicesToken([$user->device_token])
+                ->send();
+            //$this->dump($push);
+        } else {
+            $push = new PushNotification('fcm');
+            $push->setMessage([
 
+                'data' => [
+                    'title' => 'ChatApp',
+                    'body' => $msg
+                ]
+            ])
+                ->setDevicesToken([$user->device_token])
+                ->send();
+            if (isset($push->feedback->error)) {
+                //$this->dump(($push->feedback->error));
+            }
+            //$this->dump($push);
+
+        }
+    }
 
 }

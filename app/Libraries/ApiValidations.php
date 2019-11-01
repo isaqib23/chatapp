@@ -7,7 +7,9 @@ class ApiValidations {
     public function login($data){
         $validator = Validator::make($data,[
             'email' => 'required|string|email',
-            'password' => 'required|string'
+            'password' => 'required|string',
+            'device_token' => 'required|string',
+            'device_type' => 'required|string'
         ]);
 
 
@@ -29,6 +31,8 @@ class ApiValidations {
             'phone' => 'required|string',
             'address' => 'required|string',
             'photo' => 'required|string',
+            'device_token' => 'required|string',
+            'device_type' => 'required|string'
         ]);
 
 

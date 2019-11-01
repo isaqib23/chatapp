@@ -122,6 +122,7 @@
       <path value="$PROJECT_DIR$/vendor/league/oauth2-server" />
       <path value="$PROJECT_DIR$/vendor/league/event" />
       <path value="$PROJECT_DIR$/vendor/stripe/stripe-php" />
+      <path value="$PROJECT_DIR$/vendor/edujugon/push-notification" />
     </include_path>
   </component>
   <component name="ProjectId" id="1Q0dhlPyOqgIhJK5MILSDsVKlzQ" />
@@ -189,7 +190,11 @@
       <workItem from="1571464263626" duration="165000" />
       <workItem from="1571479269327" duration="11517000" />
       <workItem from="1572022980505" duration="2036000" />
-      <workItem from="1572102568683" duration="7277000" />
+      <workItem from="1572102568683" duration="7887000" />
+      <workItem from="1572282926861" duration="676000" />
+      <workItem from="1572353565002" duration="22000" />
+      <workItem from="1572437565728" duration="324000" />
+      <workItem from="1572622573939" duration="754000" />
     </task>
     <servers />
   </component>

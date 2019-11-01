@@ -410,6 +410,70 @@
         ]
     },
     {
+        "name": "edujugon/push-notification",
+        "version": "v4.1.0",
+        "version_normalized": "4.1.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/Edujugon/PushNotification.git",
+            "reference": "9ab69b7e7c22fda062823a7f6522e1ef5e3d81f0"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/Edujugon/PushNotification/zipball/9ab69b7e7c22fda062823a7f6522e1ef5e3d81f0",
+            "reference": "9ab69b7e7c22fda062823a7f6522e1ef5e3d81f0",
+            "shasum": ""
+        },
+        "require": {
+            "guzzlehttp/guzzle": "^6.3",
+            "illuminate/notifications": "~5.8 || ^6.0",
+            "illuminate/support": "~5.8 || ^6.0",
+            "php": "^7.1.3"
+        },
+        "require-dev": {
+            "phpunit/phpunit": "^7.5 || ^8.0"
+        },
+        "time": "2019-09-11T20:14:11+00:00",
+        "type": "library",
+        "extra": {
+            "laravel": {
+                "providers": [
+                    "Edujugon\\PushNotification\\Providers\\PushNotificationServiceProvider"
+                ],
+                "aliases": {
+                    "PushNotification": "Edujugon\\PushNotification\\Facades\\PushNotification"
+                }
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Edujugon\\PushNotification\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Eduardo Marcos",
+                "email": "edujugon@gmail.com"
+            }
+        ],
+        "description": "Laravel Package to send push notifications to Android and IOS devices. (GCM,FCM,APN)",
+        "keywords": [
+            "FCM",
+            "apn",
+            "gcm",
+            "high",
+            "laravel",
+            "notification",
+            "priority",
+            "push"
+        ]
+    },
+    {
         "name": "egulias/email-validator",
         "version": "2.1.11",
         "version_normalized": "2.1.11.0",
