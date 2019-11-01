@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Libraries\ApiValidations;
-use App\vendor\stripe\stripe_php\init\StripeData;
+use App\Libraries\StripeData;
 use App\StripeAccount;
 use App\User;
 use App\Group;
