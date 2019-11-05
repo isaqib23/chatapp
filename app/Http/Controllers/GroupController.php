@@ -151,7 +151,7 @@ class GroupController extends Controller
 
         $get_user = $user->where('id',$request->input('user_id'))->first();
 
-        $this->stripe->send_notification('fcm',$get_user,'Test push notification');
+        $this->stripe->send_notification('apn',$get_user,'Test push notification');
 
         if($validation['status']){
             $results = $group->with(['user','category'])->where(['user_id' => $request->input('user_id')])->get();
