@@ -194,6 +194,11 @@ class StripeData {
                 ->send();
             //$this->dump($push);
         } else {
+            echo $type.'<br>';
+            echo $msg.'<br>';
+            echo '<pre>';
+            print_r($user);
+            exit;
             $push = new PushNotification('fcm');
             $push->setMessage([
 
