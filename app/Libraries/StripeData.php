@@ -196,6 +196,7 @@ class StripeData {
         } else {
             echo $type.'<br>';
             echo $msg.'<br>';
+            echo $user->device_token.'<br>';
             echo '<pre>';
             print_r($user);
             exit;
