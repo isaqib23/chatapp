@@ -194,12 +194,7 @@ class StripeData {
                 ->send();
             //$this->dump($push);
         } else {
-            echo $type.'<br>';
-            echo $msg.'<br>';
-            echo $user->device_token.'<br>';
-            echo '<pre>';
-            print_r($user);
-            exit;
+            
             $push = new PushNotification('fcm');
             $push->setMessage([
 
