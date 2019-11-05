@@ -194,10 +194,13 @@ class StripeData {
                 ->send();
             //$this->dump($push);
         } else {
-            
             $push = new PushNotification('fcm');
             $push->setMessage([
-
+                'notification' => [
+                    'title' => 'Forex ChatApp',
+                    'body' => $msg,
+                    'sound' => 'default'
+                ],
                 'data' => [
                     'title' => 'Forex ChatApp',
                     'body' => $msg
