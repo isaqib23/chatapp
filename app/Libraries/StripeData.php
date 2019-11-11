@@ -14,7 +14,7 @@ class StripeData {
 
     public function get_stripe_settings(){
         $mode = config('services.stripe.mode');
-        $settings = new \stdClass();
+        $settings = new q4\stdClass();
         if($mode == 'sandbox') {
             $settings->secret = config('services.stripe.test.secret');
             $settings->publish = config('services.stripe.test.publish');
@@ -192,7 +192,7 @@ class StripeData {
                 ]
             ])->setDevicesToken([$user->device_token])
                 ->send();
-            //$this->dump($push);
+            return true;
         } else {
             $push = new PushNotification('fcm');
             $push->setMessage([
@@ -209,10 +209,8 @@ class StripeData {
                 ->setDevicesToken([$user->device_token])
                 ->send();
             if (isset($push->feedback->error)) {
-                //echo "<pre>";print_r($push->feedback->error);exit;
             }
-            //echo "<pre>";print_r($push);exit;
-
+            return true;
         }
     }
 
