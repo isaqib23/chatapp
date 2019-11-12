@@ -144,7 +144,6 @@ class GroupController extends Controller
 
     public function get_owner_groups(Request $request)
     {
-        echo "fdffd";exit;
         $group = new Group();
         $user_group = new GroupUser();
         $user = new User();
