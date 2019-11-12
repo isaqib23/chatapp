@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Group;
 use App\GroupUser;
+use App\Libraries\StripeData;
 use App\Message;
 use App\User;
 use Illuminate\Http\Request;
@@ -12,10 +13,12 @@ use App\Libraries\ApiValidations;
 class MessageController extends Controller
 {
     protected $validator;
+    protected $stripe;
 
     public function __construct()
     {
         $this->validator = new ApiValidations();
+        $this->stripe = new StripeData();
     }
 
     public function create(Request $request){
@@ -73,6 +76,7 @@ class MessageController extends Controller
                 'message' => $msg
             ]);
             $message->save();
+
             if($request->input('type') != 'group') {
                 $sender = $user->where('id', $message->user_id)->first();
                 $receiver = $user->where('id', $message->receiver_id)->first();
@@ -85,6 +89,10 @@ class MessageController extends Controller
                 $message->receiver_email = $receiver->email;
                 $message->receiver_photo = $receiver->photo;
                 unset($message->updated_at,$message->group_id);
+
+                // Send Push
+                $get_user = $user->where('id',$request->input('receiver_id'))->first();
+                $this->stripe->send_notification('apn',$get_user,'You have received new message from '.$message->user_name);
             }else{
                 $sender = $user->where('id',$message->user_id)->first();
                 $gro = $group->where('id',$message->group_id)->first();
@@ -97,6 +105,10 @@ class MessageController extends Controller
                 $message->group_price = $gro->price;
                 $message->group_photo = $gro->photo;
                 unset($message->receiver_id, $message->updated_at);
+
+                // Send Push
+                $get_user = $user->where('id',$message->user_id)->first();
+                $this->stripe->send_notification('apn',$get_user,'You have received new message from '.$message->user_name);
             }
             return response()->json([
                 'status'    =>  true,

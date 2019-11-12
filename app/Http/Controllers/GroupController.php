@@ -37,7 +37,7 @@ class GroupController extends Controller
     public function create(Request $request)
     {
         $validation = $this->validator->group($request->all());
-
+        $user = new User();
         if($validation['status']){
             // Upload Group Image
             define('UPLOAD_DIR', public_path().'/images/');
@@ -56,7 +56,11 @@ class GroupController extends Controller
                 'description' => $request->input('description'),
             ]);
             $group->save();
-            //$user->notify(new SignupActivate($user));
+
+            // Send Push
+            $get_user = $user->where('id',$request->input('user_id'))->first();
+            $this->stripe->send_notification('apn',$get_user,'You have create new group '.$request->input('name'));
+
             return response()->json([
                 'status'    =>  true,
                 'message'   => 'Thanks! your group has been successfully created.',
@@ -127,6 +131,11 @@ class GroupController extends Controller
                 ]);
                 $group_user->save();
 
+
+                // Send Push
+                $get_user = $user->where('id',$get_group->user_id)->first();
+                $joined = $user->where('id',$request->input('user_id'))->first();
+                $this->stripe->send_notification('apn',$get_user,$joined->first_name.' has joined your group '.$get_group->name);
                 return response()->json([
                     'status' => true,
                     'message' => 'Thanks! you have successfully Join Group.',
@@ -148,10 +157,6 @@ class GroupController extends Controller
         $user_group = new GroupUser();
         $user = new User();
         $validation = $this->validator->get_owner_groups($request->all());
-
-        $get_user = $user->where('id',$request->input('user_id'))->first();
-
-        $this->stripe->send_notification('apn',$get_user,'Test push notification');
 
         if($validation['status']){
             $results = $group->with(['user','category'])->where(['user_id' => $request->input('user_id')])->get();
