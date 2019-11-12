@@ -149,9 +149,9 @@ class GroupController extends Controller
         $user = new User();
         $validation = $this->validator->get_owner_groups($request->all());
 
-        //$get_user = $user->where('id',$request->input('user_id'))->first();
+        $get_user = $user->where('id',$request->input('user_id'))->first();
 
-        //$this->stripe->send_notification('apn',$get_user,'Test push notification');
+        $this->stripe->send_notification('apn',$get_user,'Test push notification');
 
         if($validation['status']){
             $results = $group->with(['user','category'])->where(['user_id' => $request->input('user_id')])->get();
