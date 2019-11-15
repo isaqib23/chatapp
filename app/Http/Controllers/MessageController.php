@@ -36,17 +36,20 @@ class MessageController extends Controller
                     ], 200);
                 }
                 //Check is Group Owner
-                $check = $user_group->where(['user_id' => $request->input('user_id'), 'group_id' => $request->input('group_id')])->first();
-                if($check === Null){
-                    return response()->json([
-                        'status' => false,
-                        'message' => 'You are not member of this group.',
-                    ], 200);
-                }elseif ($check->can_send_text == 'no') {
-                    return response()->json([
-                        'status' => false,
-                        'message' => 'You cannot send message to this group.',
-                    ], 200);
+                $check_owner = $group->where('user_id',$request->input('user_id'))->first();
+                if($check_owner === null) {
+                    $check = $user_group->where(['user_id' => $request->input('user_id'), 'group_id' => $request->input('group_id')])->first();
+                    if ($check === Null) {
+                        return response()->json([
+                            'status' => false,
+                            'message' => 'You are not member of this group.',
+                        ], 200);
+                    } elseif ($check->can_send_text == 'no') {
+                        return response()->json([
+                            'status' => false,
+                            'message' => 'You cannot send message to this group.',
+                        ], 200);
+                    }
                 }
             }else{
                 if(empty($request->input('receiver_id'))){
@@ -205,7 +208,6 @@ class MessageController extends Controller
 
         if($validation['status']){
             $check_owner = $group->where('user_id',$request->input('user_id'))->first();
-            echo "<pre>";print_r($check_owner);exit;
             if($check_owner === Null) {
                 $check = $user_group->where(['user_id' => $request->input('user_id'), 'group_id' => $request->input('group_id')])->first();
                 if ($check === Null) {
