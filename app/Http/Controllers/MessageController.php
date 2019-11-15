@@ -205,6 +205,7 @@ class MessageController extends Controller
 
         if($validation['status']){
             $check_owner = $group->where('user_id',$request->input('user_id'))->first();
+            echo "<pre>";print_r($check_owner);exit;
             if($check_owner === Null) {
                 $check = $user_group->where(['user_id' => $request->input('user_id'), 'group_id' => $request->input('group_id')])->first();
                 if ($check === Null) {
