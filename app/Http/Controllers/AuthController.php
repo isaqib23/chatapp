@@ -39,12 +39,12 @@ class AuthController extends Controller
                 'phone' => $request->input('phone'),
                 'address' => $request->input('address'),
                 'photo' => $data['picture'],
-                'device_token' => $request->input('device_id'),
+                'device_token' => '',
                 'device_type' => (strtoupper($request->input('device_type')) == 'IOS') ? 'IOS' : 'ANDROID',
                 'activation_token' => str_random(60)
             ]);
             $user->save();
-            $user->notify(new SignupActivate($user));
+            //$user->notify(new SignupActivate($user));
             return response()->json([
                 'status'    =>  true,
                 'message'   => 'Thanks! your account has been successfully created. Please check your inbox, a confirmation message is sent on your email.',

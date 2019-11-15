@@ -30,9 +30,7 @@ class ApiValidations {
             'type' => 'required|string',
             'phone' => 'required|string',
             'address' => 'required|string',
-            'photo' => 'required|string',
-            'device_id' => 'required|string',
-            'device_type' => 'required|string'
+            'photo' => 'required|string'
         ]);
 
 
