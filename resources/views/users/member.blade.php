@@ -34,7 +34,11 @@
                                 <td><img src="assets/media/image/light-logo.png" class="tbl-img" /></td>
                                 <td>{{$value->first_name.' '.$value->last_name}}</td>
                                 <td>{{$value->email}}</td>
-                                <td>{{$value->group->group->name}}</td>
+                                @if($value->group != null)
+                                    <td>{{$value->group->group->name}}</td>
+                                @else
+                                    <td>-</td>
+                                @endif
                                 <td>{{date('Y/m/d',strtotime($value->created_at))}}</td>
                             </tr>
                         @endforeach
