@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\User;
 use App\Group;
+use App\GroupUser;
 
 class HomeController extends Controller
 {
@@ -35,5 +36,12 @@ class HomeController extends Controller
         $total = $groups->sum('price');
         $profit = $total*0.1;
         return view('home', compact('users', 'owner', 'groups','total','profit'));
+    }
+
+    public function payments(){
+        $groupUser = new GroupUser();
+        $payments = $groupUser->with(['user','group'])->get();
+
+        return view('payments', compact('payments'));
     }
 }

@@ -25,6 +25,7 @@ Route::get('/stripe_account', 'ApiController@vendor_stripe_back')->name('stripe_
 Auth::routes(['register' => false]);
 
 Route::get('/', 'HomeController@index')->name('home');
+Route::get('/payments', 'HomeController@payments')->name('payments');
 
 Route::get('/groups', 'GroupController@index')->name('groups');
 Route::get('/group_owners', 'UserController@group_owners')->name('group_owners');

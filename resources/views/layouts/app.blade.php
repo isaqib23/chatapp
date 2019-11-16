@@ -52,12 +52,9 @@
                         <li @if(Request::segment(1) == 'members') class="open" @endif><a href="{{ route('members') }}">Users </a></li>
                     </ul>
                 </li>
-                <li><a href="#"><i class="icon ti-layers-alt"></i> <span>Payment</span> </a>
-                    <ul>
-                        <li><a href="payment.html">Payment Against Group </a></li>
-                        <li><a href="profit.html">Payment Profit </a></li>
-                    </ul>
-                </li>
+                <li @if(Request::segment(1) == 'payments') class="open" @endif><a href="{{ route('payments') }}"><i class="icon ti-layers-alt"></i> <span>Payments</span> <span
+                            class="badge bg-danger-gradient"></span> </a></li>
+                
                 <li @if(Request::segment(1) == 'categories') class="open" @endif><a href="{{ route('categories') }}"><i class="icon ti-layout-accordion-list"></i> <span>Categories</span> <span
                             class="badge bg-danger-gradient"></span> </a></li>
             </ul>
