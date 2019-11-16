@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\User;
+use App\Group;
 
 class HomeController extends Controller
 {
@@ -24,6 +26,14 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $user = new User();
+        $group = new Group();
+        $users = $user->where(['type' => 'member', 'active' => true])->get();
+        $owner = $user->where(['type' => 'owner', 'active' => true])->get();
+        $groups = $group->all();
+
+        $total = $groups->sum('price');
+        $profit = $total*0.1;
+        return view('home', compact('users', 'owner', 'groups','total','profit'));
     }
 }
