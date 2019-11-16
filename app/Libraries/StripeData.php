@@ -14,7 +14,7 @@ class StripeData {
 
     public function get_stripe_settings(){
         $mode = config('services.stripe.mode');
-        $settings = new q4\stdClass();
+        $settings = new stdClass();
         if($mode == 'sandbox') {
             $settings->secret = config('services.stripe.test.secret');
             $settings->publish = config('services.stripe.test.publish');
