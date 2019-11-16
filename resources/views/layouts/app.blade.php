@@ -78,7 +78,7 @@
 
             <div class="header-body">
 
-                <form class="search">
+                <form class="search" style="display: none">
                     <div class="input-group">
                         <input type="text" class="form-control" placeholder="Search ..."
                                aria-label="Recipient's username"
@@ -92,11 +92,11 @@
                 </form>
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a href="#" class="d-lg-none d-sm-block nav-link search-panel-open">
-                            <i class="fa fa-search"></i>
-                        </a>
+                        <a href="{{ route('logout') }}" style="background: #fff"
+                           onclick="event.preventDefault();
+                                                     document.getElementById('logout-form').submit();" class="text-danger dropdown-item">Logout</a>
                     </li>
-                    <li class="nav-item dropdown">
+                    <li style="display: none" class="nav-item dropdown">
                         <a href="#" class="nav-link nav-link-notify" data-toggle="dropdown">
                             <i class="fa fa-envelope"></i>
                         </a>
@@ -184,7 +184,7 @@
                             </div>
                         </div>
                     </li>
-                    <li class="nav-item dropdown">
+                    <li style="display: none" class="nav-item dropdown">
                         <a href="#" data-toggle="dropdown">
                             <figure class="avatar avatar-sm avatar-state-success">
                                 <img class="rounded-circle" src="assets/media/image/avatar.jpg" alt="...">
@@ -199,7 +199,7 @@
                                                      document.getElementById('logout-form').submit();" class="text-danger dropdown-item">Logout</a>
                         </div>
                     </li>
-                    <li class="nav-item d-lg-none d-sm-block">
+                    <li style="display: none" class="nav-item d-lg-none d-sm-block">
                         <a href="#" class="nav-link side-menu-open">
                             <i class="ti-menu"></i>
                         </a>
