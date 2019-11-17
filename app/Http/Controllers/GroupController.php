@@ -267,6 +267,12 @@ class GroupController extends Controller
             foreach ($results as $key => $item) {
                 $groups = $user_group->where(['user_id' => $request->input('user_id'), 'group_id' => $item->id,'status' => 'join'])->first();
                 if (!$groups) {
+                    $check_chat = $this->stripe->check_single_chat($request->input('user_id'),$item->user_id);
+                    if(count($check_chat) > 0){
+                        $results[$key]->room_id = $check_chat[0]->room_id;
+                    }else {
+                        $results[$key]->room_id = $this->stripe->generate_room($request->input('user_id'), $item->id);
+                    }
                     $selected[] = $results->pull($key);
                 }
             }

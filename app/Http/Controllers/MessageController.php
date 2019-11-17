@@ -59,7 +59,15 @@ class MessageController extends Controller
                     ], 200);
                 }
 
-                $room_id = $this->generate_room($request->input('user_id'),$request->input('receiver_id'));
+                if(empty($request->input('room_id'))){
+                    return response()->json([
+                        'status' => false,
+                        'message' => 'Please enter Room ID',
+                    ], 200);
+                }
+
+                $room_id = $request->input('room_id');
+                    //$this->stripe->generate_room($request->input('user_id'),$request->input('receiver_id'));
             }
             // Upload Group Image
             if($request->input('text_type') != 'text'){
@@ -259,29 +267,5 @@ class MessageController extends Controller
         return $name;
     }
 
-    public function generate_room($sender,$receiver){
-        $msg = new Message();
-        $type1 = $msg->where(['user_id' => $sender, 'receiver_id' => $receiver])->first();
-        $type2 = $msg->where(['user_id' => $receiver, 'receiver_id' => $sender])->first();
-        if($type1 === Null && $type2 === Null){
-            return $this->generateRandomString(6);
-        }
-        if($type1 === Null){
-            return $type2->room_id;
-        }
 
-        if($type2 === Null){
-            return $type1->room_id;
-        }
-    }
-
-    public function generateRandomString($length) {
-        $characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        $charactersLength = strlen($characters);
-        $randomString = '';
-        for ($i = 0; $i < $length; $i++) {
-            $randomString .= $characters[rand(0, $charactersLength - 1)];
-        }
-        return $randomString;
-    }
 }

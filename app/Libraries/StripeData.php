@@ -4,6 +4,7 @@ namespace App\Libraries;
 
 use App\Group;
 use App\GroupUser;
+use App\Message;
 use App\StripeAccount;
 use App\User;
 use Stripe\Stripe;
@@ -212,6 +213,44 @@ class StripeData {
             }
             return true;
         }
+    }
+
+    public function generate_room($sender,$receiver){
+        $msg = new Message();
+        $type1 = $msg->where(['user_id' => $sender, 'receiver_id' => $receiver])->first();
+        $type2 = $msg->where(['user_id' => $receiver, 'receiver_id' => $sender])->first();
+        if($type1 === Null && $type2 === Null){
+            return $this->generateRandomString(6);
+        }
+        if($type1 === Null){
+            return $type2->room_id;
+        }
+
+        if($type2 === Null){
+            return $type1->room_id;
+        }
+    }
+
+    public function generateRandomString($length) {
+        $characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $charactersLength = strlen($characters);
+        $randomString = '';
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[rand(0, $charactersLength - 1)];
+        }
+        return $randomString;
+    }
+
+    public function check_single_chat($receiver_id,$user_id){
+        $response = \DB::select("select id,user_id,receiver_id,message,text_type,room_id,type,status,created_at from `messages` where (
+                `user_id` = $receiver_id and 
+                `receiver_id` = $user_id
+                 ) or (
+                 `user_id` = $user_id and
+                  `receiver_id` = $receiver_id
+                  ) order by `id` ASC");
+
+        return $response;
     }
 
 }
